@@ -1,0 +1,216 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+
+const allProjects = await getCollection('projects');
+const categories = ['all', 'electronics', 'automotive', 'iot', 'embedded'];
+
+const stats = [
+  { value: '15+', label: 'Projects' },
+  { value: '4 yrs', label: 'FIRST Robotics' },
+  { value: '3+ yrs', label: 'Mechanic' },
+  { value: '2025', label: 'Intel Intern' },
+  { value: 'Dec 2026', label: 'Graduating' },
+  { value: 'FR · EN', label: 'Bilingual' },
+];
+---
+
+<Layout title="Paul Thillier — Engineering Portfolio">
+  <Nav />
+
+  <!-- Particle canvas -->
+  <canvas id="particles" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.4;"></canvas>
+
+  <div style="position:relative;z-index:1;">
+
+    <!-- Hero -->
+    <section style="padding:64px 32px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:48px;flex-wrap:wrap;">
+
+      <!-- Left: text -->
+      <div style="flex:1;min-width:300px;max-width:520px;padding-bottom:48px;">
+        <p style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:20px;">Engineering Portfolio</p>
+        <h1 style="font-size:clamp(36px,5vw,60px);font-weight:300;line-height:1.05;letter-spacing:-0.03em;color:var(--text);margin-bottom:24px;">
+          Hardware.<br/><em style="font-style:italic;color:var(--accent);">Embedded.</em><br/>Automotive.
+        </h1>
+        <p style="font-size:16px;color:var(--text2);line-height:1.7;margin-bottom:28px;">
+          Electrical engineering student at ASU, graduating December 2026. FIRST Robotics alumni, Intel intern, and automotive mechanic with 3+ years diagnosing and restoring classic cars. I design hardware that works in the real world — from PCB layouts in Altium to CMOS circuits in Cadence.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          {['Cadence Virtuoso', 'Altium Designer', 'Embedded C', 'Mesa, AZ'].map(tag => (
+            <span style="font-family:'DM Mono',monospace;font-size:11px;padding:4px 12px;border:1px solid var(--border);border-radius:20px;color:var(--text3);letter-spacing:0.04em;">{tag}</span>
+          ))}
+        </div>
+      </div>
+
+      <!-- Right: photo + stats -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:20px;flex-shrink:0;padding-bottom:48px;">
+        <img
+          src="/assets/Profile_Picture.jpg"
+          alt="Paul Thillier"
+          style="width:220px;height:220px;border-radius:50%;object-fit:cover;object-position:center top;border:2px solid var(--border);"
+        />
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;">
+          {stats.map(s => (
+            <div style="padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;text-align:center;">
+              <p style="font-family:'DM Mono',monospace;font-size:15px;color:var(--accent);font-weight:500;margin-bottom:2px;">{s.value}</p>
+              <p style="font-size:11px;color:var(--text3);">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </section>
+
+    <!-- FIRST Robotics Alumni Banner -->
+  <div style="position:relative;margin:0 32px 48px;">
+    <div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:rgba(232,213,163,0.04);border-radius:10px;pointer-events:none;"></div>
+    <div style="padding:16px 20px;border-top:1px solid rgba(232,213,163,0.2);display:flex;align-items:center;gap:16px;position:relative;">
+      <img src="/assets/FIRST-Alumni.webp" alt="FIRST Alumni" style="height:56px;width:auto;object-fit:contain;flex-shrink:0;filter:brightness(1.3);" />
+      <div style="flex:1;min-width:200px;display:flex;flex-direction:column;justify-content:center;">
+        <p style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.06em;margin-bottom:2px;">FIRST ROBOTICS ALUMNI · 2016–2020</p>
+        <p style="font-size:13px;color:var(--text2);line-height:1.4;">4 years designing, building & competing with full-size robots — the foundation of my engineering path.</p>
+      </div>
+      <a href="/robotics" style="margin-left:auto;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);text-decoration:none;white-space:nowrap;flex-shrink:0;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'">Learn more →</a>
+    </div>
+  </div>
+
+    <!-- Scrolling image strip -->
+    <div style="overflow:hidden;margin-bottom:48px;position:relative;">
+      <div style="position:absolute;left:0;top:0;bottom:0;width:80px;background:linear-gradient(to right,var(--bg),transparent);z-index:1;pointer-events:none;"></div>
+      <div style="position:absolute;right:0;top:0;bottom:0;width:80px;background:linear-gradient(to left,var(--bg),transparent);z-index:1;pointer-events:none;"></div>
+      <div class="scroll-strip" style="display:flex;gap:12px;width:max-content;">
+        {[...allProjects, ...allProjects].map(project => (
+          <a href={`/projects/${project.slug}`} style="flex-shrink:0;width:400px;height:250px;border-radius:10px;overflow:hidden;border:1px solid var(--border);display:block;background:var(--bg2);">
+            <img
+              src={`https://raw.githubusercontent.com/PaulThillier/${project.slug}/main/images/cover.jpg`}
+              alt={project.data.title}
+              style="width:100%;height:100%;object-fit:cover;opacity:0.8;transition:opacity 0.2s;"
+              onerror="this.style.display='none';"
+              onmouseover="this.style.opacity='1'"
+              onmouseout="this.style.opacity='0.8'"
+            />
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div id="projects" style="padding:0 32px 24px;display:flex;gap:8px;flex-wrap:wrap;">
+      {categories.map((cat, i) => (
+        <button class="filter-btn" data-filter={cat}
+          style={`font-family:'DM Mono',monospace;font-size:11px;padding:5px 14px;border-radius:20px;border:1px solid ${i===0?'var(--accent)':'var(--border)'};background:${i===0?'var(--accent)':'transparent'};color:${i===0?'#1a1400':'var(--text2)'};cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;`}>
+          {cat}
+        </button>
+      ))}
+    </div>
+
+    <!-- Project grid -->
+    <section style="padding:0 32px 64px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;" id="project-grid">
+        {allProjects.map(project => (
+          <div class="project-item" data-category={project.data.category}>
+            <ProjectCard
+              slug={project.slug}
+              title={project.data.title}
+              description={project.data.description}
+              category={project.data.category}
+              status={project.data.status}
+              tags={project.data.tags}
+              versions={project.data.versions}
+              image={`https://raw.githubusercontent.com/PaulThillier/${project.slug}/main/images/cover.jpg`}
+            />
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="border-top:1px solid var(--border);padding:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);">paulthillier@gmail.com · Mesa, AZ</span>
+      <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);">ASU EEE · paulthillier.dev</span>
+    </footer>
+
+  </div>
+</Layout>
+
+<style>
+  .scroll-strip {
+    animation: scroll 160s linear infinite;
+  }
+  .scroll-strip:hover {
+    animation-play-state: paused;
+  }
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('particles') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+
+  let W = canvas.width = window.innerWidth;
+  let H = canvas.height = window.innerHeight;
+
+  window.addEventListener('resize', () => {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  });
+
+  const PARTICLE_COUNT = 80;
+  const MAX_DIST = 140;
+  const COLOR = '232, 213, 163';
+
+  type Particle = {
+    x: number; y: number;
+    vx: number; vy: number;
+    r: number;
+  };
+
+  const particles: Particle[] = Array.from({ length: PARTICLE_COUNT }, () => ({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: (Math.random() - 0.5) * 0.3,
+    r: Math.random() * 1.5 + 0.5,
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${COLOR}, 0.6)`;
+      ctx.fill();
+
+      for (let j = i + 1; j < particles.length; j++) {
+        const q = particles[j];
+        const dx = p.x - q.x;
+        const dy = p.y - q.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < MAX_DIST) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = `rgba(${COLOR}, ${(1 - dist / MAX_DIST) * 0.15})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+</script>

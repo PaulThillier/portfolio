@@ -1,0 +1,174 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+---
+
+<Layout title="About — Paul Thillier" description="Electrical engineering student, FIRST Robotics alumni, musician.">
+  <Nav />
+
+  <main style="max-width:760px;margin:0 auto;padding:56px 32px 96px;">
+
+    <div style="display:flex;align-items:flex-start;gap:32px;margin-bottom:56px;flex-wrap:wrap;">
+      <img src="/assets/Profile_Picture.jpg" alt="Paul Thillier" style="width:120px;height:120px;border-radius:50%;object-fit:cover;object-position:center top;border:2px solid var(--border);flex-shrink:0;" />
+      <div>
+        <p style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">About</p>
+        <h1 style="font-size:clamp(24px,4vw,40px);font-weight:300;letter-spacing:-0.02em;color:var(--text);margin-bottom:12px;">Paul Thillier</h1>
+        <p style="font-size:15px;color:var(--text2);line-height:1.7;max-width:480px;">Electrical engineering student at ASU, graduating December 2026. Born in France, moved to the US in 2008 — dual citizen, native in both English and French.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;">
+          {['Mesa, AZ', 'French · English', 'ASU EEE · Dec 2026', '3.3 GPA'].map(tag => (
+            <span style="font-family:'DM Mono',monospace;font-size:10px;padding:3px 10px;border:1px solid var(--border);border-radius:20px;color:var(--text3);">{tag}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:48px;">
+      <p style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);">Experience</p>
+      <div style="display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--border);">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--accent2);margin-top:6px;flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+            <p style="font-size:14px;font-weight:500;color:var(--text);">Tech Research Summer Intern — Intel</p>
+            <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);">May–Aug 2025</p>
+          </div>
+          <p style="font-size:12px;color:var(--accent2);font-family:'DM Mono',monospace;margin-bottom:8px;">Chandler, AZ</p>
+          <ul style="font-size:13px;color:var(--text2);line-height:1.65;padding-left:16px;">
+            <li style="margin-bottom:4px;">Coordinated semiconductor fabrication equipment moves across research labs under cleanroom safety protocols</li>
+            <li style="margin-bottom:4px;">Led daily planning meetings to maintain schedules and resolve logistical conflicts</li>
+            <li style="margin-bottom:4px;">Built Excel automation tools to track equipment moves and flag delays</li>
+            <li>Operated research equipment and collected data for semiconductor process development</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;padding:16px 0;">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--bg3);border:1px solid var(--border-hover);margin-top:6px;flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+            <p style="font-size:14px;font-weight:500;color:var(--text);">Mechanic — Desert Dawg Auto Repair</p>
+            <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);">Sep 2021 – Present</p>
+          </div>
+          <p style="font-size:12px;color:var(--accent2);font-family:'DM Mono',monospace;margin-bottom:8px;">Fountain Hills, AZ</p>
+          <ul style="font-size:13px;color:var(--text2);line-height:1.65;padding-left:16px;">
+            <li style="margin-bottom:4px;">Diagnosed and repaired electrical systems including CAN bus networks using oscilloscopes and scan tools</li>
+            <li style="margin-bottom:4px;">Executed complete classic car restorations integrating modern powertrains, suspension, and electronics</li>
+            <li>Rebuilt engines and drivetrains, fabricated custom components, and handled final wiring and validation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:relative;margin:0 32px 48px;">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:rgba(232,213,163,0.04);border-radius:10px;pointer-events:none;"></div>
+      <div style="padding:16px 20px;border-top:1px solid rgba(232,213,163,0.2);display:flex;align-items:center;gap:16px;position:relative;flex-wrap:wrap;">
+        <img src="/assets/FIRST-Alumni.webp" alt="FIRST Alumni" style="height:56px;width:auto;object-fit:contain;flex-shrink:0;filter:brightness(1.3);" />
+        <div style="flex:1;min-width:200px;">
+          <p style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.06em;margin-bottom:2px;">FIRST ROBOTICS ALUMNI · 2016–2020</p>
+          <p style="font-size:13px;color:var(--text2);line-height:1.4;">4 years designing, building & competing with full-size robots — the foundation of my engineering path.</p>
+        </div>
+          <a href="/robotics" style="margin-left:auto;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);text-decoration:none;white-space:nowrap;flex-shrink:0;align-self:center;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'">Learn more →</a>
+        </div>
+    </div>
+
+    </div>
+      <p style="font-size:15px;color:var(--text2);line-height:1.75;margin-bottom:20px;">Four years designing, wiring, and programming full-size competition robots. We reached the FIRST World Championships as Semi-Finalists, and the team earned the Chairman's Award — FIRST's most prestigious honor.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px;">
+        {[
+          { year: '2016–17', role: 'Freshman', note: 'Fabrication and wiring basics' },
+          { year: '2017–18', role: 'Sophomore', note: 'Took on electrical responsibilities' },
+          { year: '2018–19', role: 'Junior', note: 'Lead electrical — full control system design' },
+          { year: '2019–20', role: 'Senior', note: 'Lead engineer — World Championship Semi-Finalist' },
+        ].map(y => (
+          <div style="padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;">
+            <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent2);margin-bottom:4px;">{y.year}</p>
+            <p style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;">{y.role}</p>
+            <p style="font-size:12px;color:var(--text2);line-height:1.4;">{y.note}</p>
+          </div>
+        ))}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        {[
+          { award: "Chairman's Award", note: "FIRST's most prestigious honor — best represents the mission of FIRST" },
+          { award: 'Gracious Professionalism Award', note: 'Exceptional respect, teamwork, and professionalism' },
+          { award: 'Rookie All-Star Award', note: 'Outstanding first-year achievement in engineering and teamwork' },
+          { award: 'World Championship Semi-Finalist', note: 'Top placement at the FIRST World Championships' },
+        ].map(a => (
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;">
+            <span style="color:var(--accent2);font-size:13px;margin-top:1px;flex-shrink:0;">★</span>
+            <div>
+              <p style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px;">{a.award}</p>
+              <p style="font-size:12px;color:var(--text2);">{a.note}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div style="margin-top:48px;margin-bottom:48px;">
+      <p style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);">Education</p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+            <p style="font-size:14px;font-weight:500;color:var(--text);">B.S.E., Electrical Engineering</p>
+            <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);">Graduating Dec 2026</p>
+          </div>
+          <p style="font-size:13px;color:var(--accent2);margin-bottom:6px;">Arizona State University · 3.3 GPA</p>
+          <p style="font-size:12px;color:var(--text2);">Digital Systems & Circuits, Hardware Design Lang/Prog Logic, Signals and Systems</p>
+        </div>
+        <div style="padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+            <p style="font-size:14px;font-weight:500;color:var(--text);">A.E., Electrical Engineering</p>
+            <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);">Graduated Dec 2023</p>
+          </div>
+          <p style="font-size:13px;color:var(--accent2);">Maricopa Community Colleges</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:48px;">
+      <p style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);">Technical Skills</p>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        {[
+          { label: 'EE Tools', items: ['Cadence Virtuoso', 'LTspice', 'Altium Designer', 'LabVIEW', 'ModelSim', 'Quartus Prime'] },
+          { label: 'Design & Modeling', items: ['MATLAB', 'Autodesk Fusion', 'Microsoft Office'] },
+          { label: 'Programming', items: ['Verilog', 'SystemVerilog', 'C++', 'Python'] },
+          { label: 'Languages', items: ['English — Native', 'French — Native'] },
+        ].map(group => (
+          <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;">
+            <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;min-width:120px;padding-top:4px;">{group.label}</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;">
+              {group.items.map(item => (
+                <span style="font-family:'DM Mono',monospace;font-size:11px;padding:3px 10px;border-radius:10px;background:var(--bg2);color:var(--text2);border:1px solid var(--border);">{item}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div style="margin-bottom:48px;">
+      <p style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);">Music</p>
+      <p style="font-size:15px;color:var(--text2);line-height:1.75;margin-bottom:20px;">Piano was my first instrument — started young and still play. Picked up guitar around 14 and have been playing for 7+ years. Four years in marching band on percussion gave me a completely different relationship with rhythm than sitting at a keyboard alone.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        {[
+          { instrument: 'Piano', detail: 'Since childhood · First instrument' },
+          { instrument: 'Guitar', detail: '7+ years · Acoustic & electric' },
+          { instrument: 'Percussion', detail: '4 years · Marching band' },
+        ].map(m => (
+          <div style="padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;min-width:150px;">
+            <p style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;">{m.instrument}</p>
+            <p style="font-size:12px;color:var(--text2);">{m.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div style="padding:24px 28px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div>
+        <p style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:4px;">Want to get in touch?</p>
+        <p style="font-size:13px;color:var(--text2);">Open to internships, co-ops, collaborations, or just talking shop.</p>
+      </div>
+      <a href="/contact" style="font-family:'DM Mono',monospace;font-size:12px;padding:8px 18px;border-radius:20px;border:1px solid var(--border);color:var(--text);text-decoration:none;" onmouseover="this.style.borderColor='var(--border-hover)'" onmouseout="this.style.borderColor='var(--border)'">Contact →</a>
+    </div>
+
+  </main>
+</Layout>
