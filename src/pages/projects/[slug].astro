@@ -5,11 +5,12 @@ import { getCollection, getEntry } from 'astro:content';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
-  return projects.map(p => ({ params: { slug: p.slug } }));
+  return projects.map(p => ({ params: { slug: p.id } }));
 }
 
 const { slug } = Astro.params;
 const project = await getEntry('projects', slug);
+
 if (!project) return Astro.redirect('/');
 
 const { Content } = await project.render();
