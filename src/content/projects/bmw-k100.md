@@ -1,14 +1,14 @@
 ﻿---
-title: BMW K100 Gear Selector
-description: Converts the BMW K100 3-wire V+ gear position output to a 6-wire GND output for an aftermarket speedometer â€” 5 gears plus neutral.
+title: BMW K100 Gear Position Converter
+description: ATmega328P signal converter for the BMW K100 -- translates the 3-wire V+ gear position output to 6 discrete outputs for aftermarket speedometers. One of my first PCB designs, built senior year of high school.
 category: automotive
 status: complete
-tags: [Signal Conversion, Motorcycle, BMW]
+tags: [ATmega328P, PCB, Motorcycle, BMW]
+image: https://raw.githubusercontent.com/PaulThillier/bmw-k100-gear-position-converter/main/images/cover.jpg
+github: https://github.com/PaulThillier/bmw-k100-gear-position-converter
 versions:
   - tag: v1.0
-    date: 2024-10
+    date: 2021-11
     title: Initial build
-    note: Working signal converter, installed on bike
+    note: Working signal converter, custom PCB
 ---
-
-The BMW K100 outputs gear position as a 3-wire V+ signal, but the aftermarket speedometer I was fitting expects a 6-wire GND-referenced output. This converter bridges the two.

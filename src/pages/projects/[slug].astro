@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import { getCollection, getEntry } from 'astro:content';
 import { render } from 'astro:content';
+import { marked } from 'marked';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -11,11 +12,10 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 const project = await getEntry('projects', slug);
-
 if (!project) return Astro.redirect('/');
 
 const { Content } = await render(project);
-const { title, description, category, status, tags, versions, image } = project.data;
+const { title, description, category, status, tags, versions, image, github, model } = project.data;
 
 const statusLabel = { complete: 'Complete', wip: 'Work in Progress', archived: 'Archived' };
 const statusColor = {
@@ -23,12 +23,34 @@ const statusColor = {
   wip: 'color:var(--wip);background:var(--wip-bg);border:1px solid rgba(201,123,58,0.25)',
   archived: 'color:var(--archived);background:var(--archived-bg);border:1px solid rgba(100,100,100,0.2)',
 };
+
+const repoName = github ? github.split('/').pop() : null;
+const baseImageUrl = repoName ? `https://raw.githubusercontent.com/PaulThillier/${repoName}/main/images` : null;
+const additionalImages = baseImageUrl ? Array.from({ length: 10 }, (_, i) =>
+  `${baseImageUrl}/${String(i + 1).padStart(2, '0')}.jpg`
+) : [];
+
+// Fetch README from GitHub
+let readmeHtml = null;
+if (repoName) {
+  try {
+    const readmeRaw = await fetch(`https://raw.githubusercontent.com/PaulThillier/${repoName}/main/README.md`);
+    if (readmeRaw.ok) {
+      const readmeText = await readmeRaw.text();
+      readmeHtml = marked(readmeText);
+    }
+  } catch (e) {
+    readmeHtml = null;
+  }
+}
 ---
 
 <Layout title={`${title} — Paul Thillier`} description={description}>
   <Nav />
 
-  <main style="max-width:760px;margin:0 auto;padding:48px 32px 80px;">
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+
+  <main style="max-width:1100px;margin:0 auto;padding:48px 32px 80px;">
 
     <!-- Back -->
     <a href="/" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);text-decoration:none;letter-spacing:0.06em;display:inline-flex;align-items:center;gap:6px;margin-bottom:40px;" onmouseover="this.style.color='var(--text2)'" onmouseout="this.style.color='var(--text3)'">
@@ -38,7 +60,20 @@ const statusColor = {
     <!-- Header -->
     <div style="margin-bottom:32px;">
       <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">{category}</p>
-      <h1 style="font-size:clamp(24px,4vw,40px);font-weight:300;letter-spacing:-0.02em;color:var(--text);margin-bottom:12px;">{title}</h1>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:12px;">
+        <h1 style="font-size:clamp(24px,4vw,40px);font-weight:300;letter-spacing:-0.02em;color:var(--text);">{title}</h1>
+        {github && (
+          <a href={github} target="_blank" rel="noopener"
+            style="display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);color:var(--text);text-decoration:none;white-space:nowrap;flex-shrink:0;"
+            onmouseover="this.style.borderColor='var(--border-hover)'"
+            onmouseout="this.style.borderColor='var(--border)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+            </svg>
+            View on GitHub
+          </a>
+        )}
+      </div>
       <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px;">
         <span style={`font-family:'DM Mono',monospace;font-size:10px;padding:3px 10px;border-radius:10px;letter-spacing:0.06em;${statusColor[status]}`}>
           {statusLabel[status]}
@@ -50,89 +85,120 @@ const statusColor = {
       <p style="font-size:16px;color:var(--text2);line-height:1.7;">{description}</p>
     </div>
 
-    <!-- Hero image -->
-    {image && (
-      <div style="width:100%;border-radius:10px;overflow:hidden;margin-bottom:40px;border:1px solid var(--border);">
-        <img src={image} alt={title} style="width:100%;display:block;opacity:0.9;" />
-      </div>
-    )}
+    <!-- Two column layout -->
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:40px;align-items:start;">
 
-    <!-- Version timeline -->
-    {versions && versions.length > 0 && (
-      <div style="margin-bottom:40px;padding:20px 24px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;">
-        <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;">Version history</p>
-        <div>
-          {[...versions].reverse().map((v, i) => (
-            <div style={`display:flex;gap:16px;padding:12px 0;${i > 0 ? 'border-top:1px solid var(--border);' : ''}`}>
-              <div style="display:flex;flex-direction:column;align-items:center;padding-top:5px;">
-                <div style={`width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${i === 0 ? 'var(--accent2)' : 'var(--bg3)'};border:1px solid ${i === 0 ? 'var(--accent2)' : 'var(--border-hover)'};`}></div>
-                {i < versions.length - 1 && <div style="width:1px;flex:1;background:var(--border);margin-top:6px;min-height:20px;"></div>}
+      <!-- Left: README -->
+      <div>
+        {readmeHtml ? (
+          <div class="prose" set:html={readmeHtml} />
+        ) : (
+          <div class="prose">
+            <Content />
+          </div>
+        )}
+      </div>
+
+      <!-- Right: sidebar -->
+      <div style="display:flex;flex-direction:column;gap:20px;position:sticky;top:76px;">
+
+        <!-- Cover image -->
+        {image && (
+          <div style="border-radius:10px;overflow:hidden;border:1px solid var(--border);">
+            <img src={image} alt={title} style="width:100%;display:block;opacity:0.9;"
+              onerror="this.parentElement.style.display='none'" />
+          </div>
+        )}
+
+        <!-- Additional images -->
+        {baseImageUrl && (
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            {additionalImages.map((url, i) => (
+              <div style="border-radius:8px;overflow:hidden;border:1px solid var(--border);display:none;" class="gallery-item">
+                <img
+                  src={url}
+                  alt={`${title} image ${i + 1}`}
+                  style="width:100%;display:block;opacity:0.85;transition:opacity 0.15s;"
+                  onload="this.parentElement.style.display='block'"
+                  onerror="this.parentElement.style.display='none'"
+                  onmouseover="this.style.opacity='1'"
+                  onmouseout="this.style.opacity='0.85'"
+                />
               </div>
-              <div style="flex:1;padding-bottom:4px;">
-                <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:2px;">
-                  <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent2);">{v.tag}</span>
-                  <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);">{v.date}</span>
+            ))}
+          </div>
+        )}
+
+        <!-- 3D Model -->
+        {model && (
+          <div style="border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--bg2);">
+            <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;padding:12px 14px 8px;">3D Model</p>
+            <model-viewer
+              src={model}
+              alt={`${title} 3D model`}
+              auto-rotate
+              camera-controls
+              style="width:100%;height:280px;background:transparent;"
+            ></model-viewer>
+          </div>
+        )}
+
+        <!-- Version history -->
+        {versions && versions.length > 0 && (
+          <div style="padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;">
+            <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px;">Version history</p>
+            {[...versions].reverse().map((v, i) => (
+              <div style={`display:flex;gap:12px;padding:10px 0;${i > 0 ? 'border-top:1px solid var(--border);' : ''}`}>
+                <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
+                  <div style={`width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${i === 0 ? 'var(--accent2)' : 'var(--bg3)'};border:1px solid ${i === 0 ? 'var(--accent2)' : 'var(--border-hover)'};`}></div>
+                  {i < versions.length - 1 && <div style="width:1px;flex:1;background:var(--border);margin-top:4px;min-height:16px;"></div>}
                 </div>
-                <p style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px;">{v.title}</p>
-                {v.note && <p style="font-size:12px;color:var(--text2);">{v.note}</p>}
+                <div style="flex:1;">
+                  <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:2px;">
+                    <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent2);">{v.tag}</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);">{v.date}</span>
+                  </div>
+                  <p style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px;">{v.title}</p>
+                  {v.note && <p style="font-size:11px;color:var(--text2);">{v.note}</p>}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    )}
+            ))}
+          </div>
+        )}
 
-    <!-- Content -->
-    <div class="prose">
-      <Content />
+      </div>
     </div>
 
   </main>
 </Layout>
 
-<style>
-  .prose {
-    color: var(--text2);
-    font-size: 15px;
-    line-height: 1.75;
+<style is:global>
+  @media (max-width: 700px) {
+    main > div:last-child {
+      grid-template-columns: 1fr !important;
+    }
   }
-  .prose h2 {
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--text);
-    margin: 32px 0 12px;
-    letter-spacing: -0.01em;
-  }
-  .prose h3 {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--text);
-    margin: 24px 0 8px;
-  }
+  .prose { color: var(--text2); font-size: 15px; line-height: 1.75; }
+  .prose h1 { font-size: 22px; font-weight: 500; color: var(--text); margin: 0 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); letter-spacing: -0.01em; }
+  .prose h2 { font-size: 18px; font-weight: 500; color: var(--text); margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  .prose h3 { font-size: 15px; font-weight: 500; color: var(--text); margin: 24px 0 8px; }
   .prose p { margin-bottom: 16px; }
-  .prose ul { padding-left: 20px; margin-bottom: 16px; }
+  .prose ul { padding-left: 20px; margin-bottom: 16px; list-style: disc; }
+  .prose ol { padding-left: 20px; margin-bottom: 16px; list-style: decimal; }
   .prose li { margin-bottom: 6px; }
-  .prose code {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    background: var(--bg3);
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: var(--accent);
-  }
-  .prose pre {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
-    overflow-x: auto;
-    margin-bottom: 16px;
-  }
-  .prose pre code {
-    background: none;
-    padding: 0;
-    color: var(--text2);
-  }
-  .prose a { color: var(--accent2); text-decoration: none; }
-  .prose a:hover { text-decoration: underline; }
+  .prose blockquote { border-left: 3px solid var(--border-hover); padding: 4px 0 4px 16px; margin: 0 0 16px; color: var(--text3); font-style: italic; }
+  .prose hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  .prose table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .prose thead { background: var(--bg3); }
+  .prose th { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: left; }
+  .prose td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text2); }
+  .prose tr:last-child td { border-bottom: none; }
+  .prose tr:hover td { background: rgba(255,255,255,0.02); }
+  .prose code { font-family: 'DM Mono', monospace; font-size: 12px; background: var(--bg3); padding: 2px 6px; border-radius: 4px; color: var(--accent); border: 1px solid var(--border); }
+  .prose pre { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; margin-bottom: 20px; }
+  .prose pre code { background: none; padding: 0; border: none; color: var(--text2); font-size: 13px; }
+  .prose a { color: var(--accent2); text-decoration: none; border-bottom: 1px solid rgba(196,169,107,0.3); transition: border-color 0.15s; }
+  .prose a:hover { border-bottom-color: var(--accent2); }
+  .prose strong { color: var(--text); font-weight: 500; }
+  .prose em { font-style: italic; }
 </style>

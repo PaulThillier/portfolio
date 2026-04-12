@@ -10,6 +10,8 @@ const projects = defineCollection({
     status: z.enum(['complete', 'wip', 'archived']),
     tags: z.array(z.string()),
     image: z.string().optional(),
+    model: z.string().optional(),
+    github: z.string().optional(),
     versions: z.array(z.object({
       tag: z.string(),
       date: z.string(),

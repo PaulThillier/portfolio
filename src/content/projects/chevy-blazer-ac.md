@@ -1,14 +1,15 @@
 ﻿---
 title: Chevy Blazer AC Direction Control
-description: ESP32-based controller to automate AC airflow direction in a Chevy Blazer using a micro servo and 12V to 5V conversion.
+description: Arduino Nano controller for 3-position HVAC airflow direction...
 category: automotive
 status: complete
-tags: [ESP32, Servo, Automotive, 12V]
+tags: [Arduino, Servo, Automotive, HVAC]
+image: https://raw.githubusercontent.com/PaulThillier/hvac-3position-controller/main/images/cover.jpg
+model: https://raw.githubusercontent.com/PaulThillier/hvac-3position-controller/main/3d-models/Chevy_Blazer_AC_Vent_Control.glb
+github: https://github.com/PaulThillier/hvac-3position-controller
 versions:
   - tag: v1.0
-    date: 2024-12
+    date: 2025-12
     title: Initial build
-    note: Working servo control, 12V buck converter onboard
+    note: Working servo control, Y-splitter duct, 3-position switch
 ---
-
-Wanted to automate the AC vent direction in my Chevy Blazer. Used a mini ESP32, a micro servo, and a 12V to 5V buck converter to fit cleanly into the dash.
