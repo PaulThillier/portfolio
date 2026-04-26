@@ -12,58 +12,155 @@ interface Props {
 
 const { slug, title, description, category, status, tags, versions, image } = Astro.props;
 
-const statusLabel = { complete: null, wip: 'WIP', archived: 'Archived' };
-const statusColor = {
-  complete: null,
-  wip: 'color:var(--wip);background:var(--wip-bg);border:1px solid rgba(201,123,58,0.25)',
+const statusLabel: Record<string, string | null> = { complete: null, wip: 'WIP', archived: 'Archived' };
+const statusStyle: Record<string, string> = {
+  complete: '',
+  wip:      'color:var(--wip);background:var(--wip-bg);border:1px solid rgba(201,123,58,0.3)',
   archived: 'color:var(--archived);background:var(--archived-bg);border:1px solid rgba(100,100,100,0.2)',
 };
 ---
 
-<a href={`/projects/${slug}`}
-  style="display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;text-decoration:none;transition:border-color 0.15s, transform 0.15s;height:100%;"
-  onmouseover="this.style.borderColor='var(--border-hover)';this.style.transform='translateY(-2px)'"
-  onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)'">
-
-  {image && (
-    <div style="width:100%;height:180px;overflow:hidden;flex-shrink:0;">
-      <img src={image} alt={title} style="width:100%;height:100%;object-fit:cover;opacity:0.85;transition:opacity 0.15s;" />
+<a href={`/projects/${slug}`} class="project-card">
+  {image ? (
+    <div class="card-img">
+      <img src={image} alt={title} onerror="this.parentElement.style.display='none'" />
     </div>
+  ) : (
+    <div class="card-img-placeholder"></div>
   )}
 
-  {!image && (
-    <div style="width:100%;height:8px;background:linear-gradient(90deg,var(--bg3),var(--bg2));flex-shrink:0;"></div>
-  )}
-
-  <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px 20px;flex:1;">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+  <div class="card-body">
+    <div class="card-header">
       <div>
-        <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">{category}</p>
-        <p style="font-size:14px;font-weight:500;color:var(--text);line-height:1.3;">{title}</p>
+        <p class="card-category">{category}</p>
+        <p class="card-title">{title}</p>
       </div>
       {statusLabel[status] && (
-        <span style={`font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:10px;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;flex-shrink:0;margin-top:2px;${statusColor[status]}`}>
-          {statusLabel[status]}
-        </span>
+        <span class="card-status" style={statusStyle[status]}>{statusLabel[status]}</span>
       )}
     </div>
 
-    <p style="font-size:13px;color:var(--text2);line-height:1.55;flex:1;">{description}</p>
+    <p class="card-desc">{description}</p>
 
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:12px;border-top:1px solid var(--border);">
-      <div style="display:flex;flex-wrap:wrap;gap:5px;">
+    <div class="card-footer">
+      <div class="card-tags">
         {tags.slice(0, 3).map(tag => (
-          <span style="font-family:'DM Mono',monospace;font-size:10px;padding:2px 8px;border-radius:10px;background:var(--bg3);color:var(--text3);letter-spacing:0.03em;">{tag}</span>
+          <span class="card-tag">{tag}</span>
         ))}
       </div>
-      {versions && versions.length > 1 && (
-        <div style="display:flex;gap:3px;align-items:center;flex-shrink:0;">
-          {versions.map((v, i) => (
-            <div style={`width:5px;height:5px;border-radius:50%;background:${i === versions.length - 1 ? 'var(--accent2)' : 'var(--bg3)'};`} title={v.tag}></div>
-          ))}
-          <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-left:4px;">{versions[versions.length-1].tag}</span>
-        </div>
+      {versions && versions.length > 0 && (
+        <span class="card-version">{versions[versions.length - 1].tag}</span>
       )}
     </div>
   </div>
 </a>
+
+<style is:global>
+.project-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s;
+  height: 100%;
+}
+.project-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+.card-img {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--surface-2);
+}
+.card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+  transition: opacity 0.15s;
+}
+.project-card:hover .card-img img { opacity: 1; }
+.card-img-placeholder {
+  width: 100%;
+  height: 6px;
+  background: var(--surface-2);
+  flex-shrink: 0;
+}
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 20px;
+  flex: 1;
+}
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.card-category {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text-3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.card-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.3;
+}
+.card-status {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.card-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.55;
+  flex: 1;
+}
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.card-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-2);
+  border: 1px solid var(--border);
+  letter-spacing: 0.03em;
+}
+.card-version {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text-3);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+</style>

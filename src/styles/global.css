@@ -1,25 +1,87 @@
 @import "tailwindcss";
 
+/*
+ * COLOR ARCHITECTURE
+ * ------------------
+ * All semantic variables (--bg, --surface, --text, etc.) are defined once
+ * in :root as dark-mode values. The [data-theme="light"] block simply
+ * reassigns those same variables to light values.
+ *
+ * Every page/component uses ONLY the semantic variables — never raw hex,
+ * never --emerald-NNN directly for theming. The emerald palette is available
+ * for one-off accents (buttons, highlights) but not for backgrounds or text.
+ *
+ * Semantic variables:
+ *   --bg             Page background
+ *   --surface        Island/card background (pops off --bg)
+ *   --surface-2      Elevated surface (inside cards, rows)
+ *   --surface-3      Highest surface (active/selected rows)
+ *   --border         Default border
+ *   --border-strong  Hover/focus border
+ *   --text           Primary text
+ *   --text-2         Secondary text
+ *   --text-3         Muted/label text
+ *   --accent         Logo + hero italic + buttons
+ */
+
+/* ── Emerald palette (reference only — do not use directly for theming) ───── */
 :root {
-  --bg: #0e0e0e;
-  --bg2: #161616;
-  --bg3: #1e1e1e;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(255, 255, 255, 0.16);
-  --text: #f0ede8;
-  --text2: #888;
-  --text3: #4a4a4a;
-  --accent: #e8d5a3;
-  --accent2: #c4a96b;
-  --wip: #c97b3a;
-  --wip-bg: rgba(201, 123, 58, 0.12);
-  --complete: #5a9e6f;
-  --complete-bg: rgba(90, 158, 111, 0.12);
-  --archived: #666;
-  --archived-bg: rgba(100, 100, 100, 0.12);
+  --emerald-50: #e6fff8;
+  --emerald-100: #ccfff1;
+  --emerald-200: #99ffe3;
+  --emerald-300: #66ffd5;
+  --emerald-400: #33e8b8;
+  --emerald-500: #00c896;
+  --emerald-600: #00a374;
+  --emerald-700: #007a55;
+  --emerald-800: #005238;
+  --emerald-900: #001a12;
+  --emerald-950: #000e09;
 }
 
-* {
+/* ── Dark mode (default) ──────────────────────────────────────────────────── */
+:root {
+  --bg: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface-2: #222222;
+  --surface-3: #2a2a2a;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --text: #f0f0f0;
+  --text-2: #a0a0a0;
+  --text-3: #666666;
+  --accent: #00c896;
+
+  --wip: #c97b3a;
+  --wip-bg: rgba(201, 123, 58, 0.15);
+  --complete: #5a9e6f;
+  --complete-bg: rgba(90, 158, 111, 0.15);
+  --archived: #888;
+  --archived-bg: rgba(100, 100, 100, 0.15);
+}
+
+/* ── Light mode — only reassigns the semantic variables above ─────────────── */
+:root[data-theme="light"] {
+  --bg: #ffffff;
+  --surface: #e8f7f2;
+  --surface-2: #f0faf6;
+  --surface-3: #f7fdfa;
+  --border: rgba(0, 200, 150, 0.15);
+  --border-strong: rgba(0, 200, 150, 0.3);
+  --text: #0f0f0f;
+  --text-2: #444444;
+  --text-3: #888888;
+  --accent: #00a374;
+
+  --wip-bg: rgba(201, 123, 58, 0.1);
+  --complete-bg: rgba(90, 158, 111, 0.1);
+  --archived-bg: rgba(100, 100, 100, 0.1);
+}
+
+/* ── Reset ────────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -36,13 +98,9 @@ body {
   font-size: 15px;
   line-height: 1.6;
   min-height: 100vh;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
-.mono {
-  font-family: 'DM Mono', monospace;
-}
-
-/* scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -52,6 +110,150 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--bg3);
+  background: var(--surface-3);
   border-radius: 3px;
+}
+
+/* ── Surface / island utility classes ────────────────────────────────────── */
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.surface-2 {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.surface-row {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.surface-row:hover {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+}
+
+.surface-row.active {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+}
+
+/* ── Button system ────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 999px;
+  padding: 8px 20px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  border: 1px solid transparent;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Primary */
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.btn-primary:hover {
+  background: var(--emerald-400);
+  border-color: var(--emerald-400);
+}
+
+.btn-primary:active {
+  background: var(--emerald-300);
+  border-color: var(--emerald-300);
+}
+
+.btn-primary:disabled,
+.btn-primary[aria-disabled="true"] {
+  background: var(--surface-3);
+  border-color: var(--border);
+  color: var(--text-2);
+}
+
+/* Secondary */
+.btn-secondary {
+  background: var(--surface-2);
+  color: var(--text-2);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.btn-secondary:active {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.btn-secondary:disabled,
+.btn-secondary[aria-disabled="true"] {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-3);
+}
+
+/* Tertiary */
+.btn-tertiary {
+  background: transparent;
+  color: var(--text-2);
+  border-color: var(--border);
+}
+
+.btn-tertiary:hover {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.btn-tertiary:active {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.btn-tertiary:disabled,
+.btn-tertiary[aria-disabled="true"] {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-3);
+}
+
+/* Sizes */
+.btn-sm {
+  font-size: 11px;
+  padding: 5px 14px;
+}
+
+.btn-lg {
+  font-size: 15px;
+  padding: 12px 28px;
 }

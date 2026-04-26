@@ -5,6 +5,7 @@ category: automotive
 status: complete
 tags: [ATmega328P, PCB, Motorcycle, BMW]
 image: https://raw.githubusercontent.com/PaulThillier/bmw-k100-gear-position-converter/main/images/cover.jpg
+model: https://raw.githubusercontent.com/PaulThillier/bmw-k100-gear-position-converter/main/3d-models/bmw-k100-gear-position-converter-pcb.gltf
 github: https://github.com/PaulThillier/bmw-k100-gear-position-converter
 versions:
   - tag: v1.0

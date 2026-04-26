@@ -1,37 +1,203 @@
 ---
-const links = [
-  { href: '/#projects', label: 'Projects' },
-  { href: '/about', label: 'About' },
-  { href: '/robotics', label: 'Robotics' },
-  { href: '/resume.pdf', label: 'Resume', external: true },
-];
+import { getCollection } from 'astro:content';
+const projects = await getCollection('projects');
+const path = Astro.url.pathname;
+const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith(href);
 ---
 
+<nav id="navbar">
+  <a href="/" class="nav-logo">PT /</a>
 
-<nav style="position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(14,14,14,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);">
-  <a href="/" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:0.04em;text-decoration:none;">
-    PT /
-  </a>
-  <div style="display:flex;gap:24px;align-items:center;">
-    {links.map(link => (
-      <a
-        href={link.href}
-        target={link.external ? '_blank' : undefined}
-        rel={link.external ? 'noopener' : undefined}
-        style="font-size:13px;color:var(--text2);text-decoration:none;transition:color 0.15s;"
-        onmouseover="this.style.color='var(--text)'"
-        onmouseout="this.style.color='var(--text2)'"
-      >
-        {link.label}
-      </a>
-    ))}
-    <a
-      href="/contact"
-      style="font-size:12px;padding:5px 14px;border-radius:20px;border:1px solid var(--border);color:var(--text);text-decoration:none;transition:border-color 0.15s;"
-      onmouseover="this.style.borderColor='var(--border-hover)'"
-      onmouseout="this.style.borderColor='var(--border)'"
-    >
-      Contact
+  <div class="nav-links" id="nav-links">
+    <a href="/about"    class={`nav-link ${isActive('/about')    ? 'nav-active' : ''}`}>About</a>
+    <a href="/robotics" class={`nav-link ${isActive('/robotics') ? 'nav-active' : ''}`}>Robotics</a>
+
+    <div class="nav-dropdown" id="projects-dropdown">
+      <button class={`nav-link dropdown-trigger ${isActive('/projects') ? 'nav-active' : ''}`} aria-haspopup="true" aria-expanded="false">
+        Projects
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style="margin-left:4px;transition:transform 0.2s;">
+          <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="dropdown-menu" role="menu">
+        <div class="dropdown-menu-inner">
+          {projects.sort((a, b) => a.data.title.localeCompare(b.data.title)).map(p => (
+            <a href={`/projects/${p.id}`} class={`dropdown-item ${path === `/projects/${p.id}` ? 'dropdown-item-active' : ''}`} role="menuitem">
+              <span class="dropdown-item-title">{p.data.title}</span>
+              <span class={`dropdown-item-status ${p.data.status}`}>{p.data.status === 'wip' ? 'WIP' : p.data.status}</span>
+            </a>
+          ))}
+          <div class="dropdown-divider"></div>
+          <a href="/#projects" class="dropdown-item dropdown-all" role="menuitem">View all projects →</a>
+        </div>
+      </div>
+    </div>
+
+    <a href="/resume.pdf" class="nav-link" target="_blank" rel="noopener">Resume</a>
+
+    <a href="https://github.com/PaulThillier" class="nav-link nav-github" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="margin-right:4px;flex-shrink:0;">
+        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      GitHub
     </a>
+
+    <a href="/contact" class={`nav-contact ${isActive('/contact') ? 'nav-contact-active' : ''}`}>Contact</a>
+
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode">
+      <span class="tt-label" id="tt-light">Light</span>
+      <span class="tt-track"><span class="tt-thumb"></span></span>
+      <span class="tt-label" id="tt-dark">Dark</span>
+    </button>
   </div>
+
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <div class="mobile-menu-inner">
+    <div class="mobile-section-label">Navigation</div>
+    <a href="/#projects" class="mobile-link">All Projects</a>
+    <a href="/about"    class={`mobile-link ${isActive('/about')    ? 'mobile-active' : ''}`}>About</a>
+    <a href="/robotics" class={`mobile-link ${isActive('/robotics') ? 'mobile-active' : ''}`}>Robotics</a>
+    <a href="/resume.pdf" class="mobile-link" target="_blank" rel="noopener">Resume ↗</a>
+    <a href="/contact"  class={`mobile-link ${isActive('/contact')  ? 'mobile-active' : ''}`}>Contact</a>
+    <a href="https://github.com/PaulThillier" class="mobile-link" target="_blank" rel="noopener">GitHub ↗</a>
+    {projects.length > 0 && (
+      <>
+        <div class="mobile-section-label" style="margin-top:24px;">Projects</div>
+        {projects.sort((a, b) => a.data.title.localeCompare(b.data.title)).map(p => (
+          <a href={`/projects/${p.id}`} class={`mobile-link mobile-project-link ${path === `/projects/${p.id}` ? 'mobile-active' : ''}`}>
+            <span>{p.data.title}</span>
+            <span class={`mobile-status ${p.data.status}`}>{p.data.status === 'wip' ? 'WIP' : p.data.status}</span>
+          </a>
+        ))}
+      </>
+    )}
+  </div>
+</div>
+
+<style is:global>
+#navbar {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; height: 56px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s, border-color 0.2s;
+}
+.nav-logo {
+  font-family: 'DM Mono', monospace; font-size: 13px;
+  color: var(--accent); letter-spacing: 0.04em;
+  text-decoration: none; flex-shrink: 0; transition: color 0.2s;
+}
+.nav-links { display: flex; align-items: center; gap: 2px; }
+.nav-link {
+  font-size: 13px; color: var(--text-2); text-decoration: none;
+  padding: 6px 10px; border-radius: 8px;
+  transition: color 0.15s, background 0.15s;
+  background: none; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; display: flex; align-items: center;
+}
+.nav-link:hover { color: var(--text); background: var(--surface-2); }
+.nav-active { color: var(--text) !important; background: var(--surface-2) !important; font-weight: 500; }
+
+.nav-contact {
+  font-size: 12px; padding: 5px 14px; border-radius: 999px;
+  border: 1px solid var(--border); color: var(--text-2);
+  background: transparent; text-decoration: none; margin-left: 4px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.nav-contact:hover { background: var(--surface-2); border-color: var(--border-strong); color: var(--text); }
+.nav-contact-active { background: var(--surface-2) !important; border-color: var(--border-strong) !important; color: var(--text) !important; font-weight: 500; }
+
+.theme-toggle { display: flex; align-items: center; gap: 6px; background: none; border: none; cursor: pointer; padding: 0; margin-left: 8px; flex-shrink: 0; }
+.tt-label { font-size: 12px; font-family: 'DM Sans', sans-serif; color: var(--text-2); transition: color 0.2s; user-select: none; }
+:root:not([data-theme="light"]) #tt-dark { color: var(--accent); }
+:root[data-theme="light"] #tt-light { color: var(--accent); }
+.tt-track { position: relative; width: 36px; height: 20px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); transition: background 0.2s, border-color 0.2s; flex-shrink: 0; }
+.tt-thumb { position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); transition: transform 0.2s ease; transform: translateX(16px); }
+:root[data-theme="light"] .tt-thumb { transform: translateX(0px); }
+
+.nav-dropdown { position: relative; }
+.dropdown-trigger { display: flex; align-items: center; }
+.dropdown-menu { display: none; position: absolute; top: 100%; left: 0; padding-top: 8px; min-width: 240px; z-index: 200; }
+.dropdown-menu-inner { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 6px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+.nav-dropdown.open .dropdown-menu { display: block; }
+.nav-dropdown.open .dropdown-trigger svg { transform: rotate(180deg); }
+.dropdown-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; text-decoration: none; transition: background 0.12s; gap: 8px; }
+.dropdown-item:hover { background: var(--surface-2); }
+.dropdown-item-active { background: var(--surface-2); }
+.dropdown-item-title { font-size: 13px; color: var(--text); }
+.dropdown-item-status { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+.dropdown-item-status.complete { color: var(--complete); background: var(--complete-bg); }
+.dropdown-item-status.wip      { color: var(--wip);      background: var(--wip-bg); }
+.dropdown-item-status.archived { color: var(--archived); background: var(--archived-bg); }
+.dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
+.dropdown-all { color: var(--text-2) !important; font-family: 'DM Mono', monospace; font-size: 12px; }
+.dropdown-all:hover { color: var(--text) !important; }
+
+.hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 32px; height: 32px; background: none; border: none; cursor: pointer; padding: 4px; }
+.hamburger span { display: block; height: 1.5px; background: var(--text-2); border-radius: 2px; transition: transform 0.25s, opacity 0.25s; transform-origin: center; }
+.hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.mobile-menu { display: none; position: fixed; top: 56px; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 99; overflow-y: auto; transform: translateY(-8px); opacity: 0; transition: transform 0.25s ease, opacity 0.25s ease; pointer-events: none; }
+.mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: all; }
+.mobile-menu-inner { padding: 24px 24px 48px; display: flex; flex-direction: column; }
+.mobile-section-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.mobile-link { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; font-size: 16px; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); transition: color 0.15s; }
+.mobile-link:hover { color: var(--text-3); }
+.mobile-active { color: var(--text-3) !important; font-weight: 500; }
+.mobile-project-link { font-size: 14px; color: var(--text-2); }
+.mobile-status { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; }
+.mobile-status.complete { color: var(--complete); background: var(--complete-bg); }
+.mobile-status.wip      { color: var(--wip);      background: var(--wip-bg); }
+.mobile-status.archived { color: var(--archived); background: var(--archived-bg); }
+
+@media (max-width: 720px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .mobile-menu { display: block; }
+  #navbar { padding: 0 20px; }
+}
+</style>
+
+<script>
+  const root = document.documentElement;
+  // Theme already set by Layout.astro inline script — just handle toggling
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+
+  // Dropdown
+  const dropdown = document.getElementById('projects-dropdown');
+  let closeTimer: ReturnType<typeof setTimeout> | null = null;
+  dropdown?.addEventListener('mouseenter', () => { if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; } dropdown.classList.add('open'); });
+  dropdown?.addEventListener('mouseleave', () => { closeTimer = setTimeout(() => dropdown.classList.remove('open'), 100); });
+
+  // Hamburger
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamburger?.addEventListener('click', () => {
+    const isOpen = hamburger.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(isOpen));
+    mobileMenu?.classList.toggle('open', isOpen);
+    mobileMenu?.setAttribute('aria-hidden', String(!isOpen));
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+  mobileMenu?.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger?.classList.remove('open');
+      hamburger?.setAttribute('aria-expanded', 'false');
+      mobileMenu.classList.remove('open');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    });
+  });
+</script>

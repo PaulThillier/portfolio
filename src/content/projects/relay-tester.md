@@ -5,6 +5,7 @@ category: electronics
 status: complete
 tags: [Arduino, PCB, Automotive, LCD]
 image: https://raw.githubusercontent.com/PaulThillier/automotive-relay-tester/main/images/cover.jpg
+model: https://raw.githubusercontent.com/PaulThillier/automotive-relay-tester/main/3d-models/relay-tester-pcb.gltf
 github: https://github.com/PaulThillier/automotive-relay-tester
 versions:
   - tag: v1.0

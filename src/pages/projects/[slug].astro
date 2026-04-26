@@ -1,8 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
-import { getCollection, getEntry } from 'astro:content';
-import { render } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import { marked } from 'marked';
 
 export async function getStaticPaths() {
@@ -18,187 +17,456 @@ const { Content } = await render(project);
 const { title, description, category, status, tags, versions, image, github, model } = project.data;
 
 const statusLabel = { complete: 'Complete', wip: 'Work in Progress', archived: 'Archived' };
-const statusColor = {
+const statusStyle = {
   complete: 'color:var(--complete);background:var(--complete-bg);border:1px solid rgba(90,158,111,0.25)',
-  wip: 'color:var(--wip);background:var(--wip-bg);border:1px solid rgba(201,123,58,0.25)',
+  wip:      'color:var(--wip);background:var(--wip-bg);border:1px solid rgba(201,123,58,0.25)',
   archived: 'color:var(--archived);background:var(--archived-bg);border:1px solid rgba(100,100,100,0.2)',
 };
 
 const repoName = github ? github.split('/').pop() : null;
-const baseImageUrl = repoName ? `https://raw.githubusercontent.com/PaulThillier/${repoName}/main/images` : null;
-const additionalImages = baseImageUrl ? Array.from({ length: 10 }, (_, i) =>
-  `${baseImageUrl}/${String(i + 1).padStart(2, '0')}.jpg`
-) : [];
+const baseImageUrl = repoName
+  ? `https://raw.githubusercontent.com/PaulThillier/${repoName}/main/images`
+  : null;
 
-// Fetch README from GitHub
-let readmeHtml = null;
+// Fetch README from GitHub at build time
+let readmeHtml = '';
 if (repoName) {
   try {
-    const readmeRaw = await fetch(`https://raw.githubusercontent.com/PaulThillier/${repoName}/main/README.md`);
-    if (readmeRaw.ok) {
-      const readmeText = await readmeRaw.text();
-      readmeHtml = marked(readmeText);
+    const res = await fetch(
+      `https://raw.githubusercontent.com/PaulThillier/${repoName}/main/README.md`
+    );
+    if (res.ok) {
+      const md = await res.text();
+      const lines = md.split('\n');
+      const stripped = (lines[0].startsWith('#') ? lines.slice(1) : lines).join('\n').trim();
+      readmeHtml = marked(stripped) as string;
     }
   } catch (e) {
-    readmeHtml = null;
+    // README fetch failed — prose section will just be empty
   }
 }
 ---
 
-<Layout title={`${title} — Paul Thillier`} description={description}>
+<Layout title={`${title} — Paul Thillier`}>
   <Nav />
 
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+  <div id="lightbox" aria-hidden="true">
+    <div id="lightbox-backdrop"></div>
+    <div id="lightbox-container">
+      <div id="lightbox-content"></div>
+      <div id="lightbox-counter"></div>
+    </div>
+    <div id="lightbox-ui">
+      <button id="lightbox-close" aria-label="Close">✕</button>
+      <button id="lightbox-prev"  aria-label="Previous">‹</button>
+      <button id="lightbox-next"  aria-label="Next">›</button>
+    </div>
+  </div>
 
   <main style="max-width:1100px;margin:0 auto;padding:48px 32px 80px;">
 
-    <!-- Back -->
-    <a href="/" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);text-decoration:none;letter-spacing:0.06em;display:inline-flex;align-items:center;gap:6px;margin-bottom:40px;" onmouseover="this.style.color='var(--text2)'" onmouseout="this.style.color='var(--text3)'">
-      ← All projects
+    <a href="/#projects" class="btn btn-tertiary btn-sm" style="margin-bottom:32px;display:inline-flex;">
+      ← Back to projects
     </a>
 
     <!-- Header -->
     <div style="margin-bottom:32px;">
-      <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">{category}</p>
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:12px;">
-        <h1 style="font-size:clamp(24px,4vw,40px);font-weight:300;letter-spacing:-0.02em;color:var(--text);">{title}</h1>
+      <p style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">{category}</p>
+      <h1 style="font-size:clamp(24px,4vw,40px);font-weight:300;letter-spacing:-0.02em;color:var(--text);margin:0 0 16px;">{title}</h1>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px;">
+        <span style={`font-family:'DM Mono',monospace;font-size:10px;padding:3px 10px;border-radius:6px;letter-spacing:0.06em;text-transform:uppercase;${statusStyle[status]}`}>
+          {statusLabel[status]}
+        </span>
+        {tags.map(tag => (
+          <span class="btn btn-secondary btn-sm" style="pointer-events:none;">{tag}</span>
+        ))}
+      </div>
+      <p style="font-size:16px;color:var(--text-2);line-height:1.7;max-width:720px;">{description}</p>
+    </div>
+
+    <!-- Two-column layout -->
+    <div style="display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start;">
+
+      <!-- Left: cover + README card -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;">
+        {image && (
+          <img
+            id="cover-img"
+            src={image}
+            alt={title}
+            onerror="this.style.display='none'"
+            style="width:100%;border-radius:8px;border:1px solid var(--border);margin-bottom:24px;object-fit:cover;max-height:380px;cursor:pointer;transition:opacity 0.18s;"
+            onmouseover="this.style.opacity='0.82'"
+            onmouseout="this.style.opacity='1'"
+          />
+        )}
+        {readmeHtml ? <div class="prose" set:html={readmeHtml} /> : <div class="prose"><Content /></div>}
+      </div>
+
+      <!-- Right: sidebar -->
+      <div style="display:flex;flex-direction:column;gap:16px;position:sticky;top:80px;">
+
+        <!-- GitHub button -->
         {github && (
-          <a href={github} target="_blank" rel="noopener"
-            style="display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);color:var(--text);text-decoration:none;white-space:nowrap;flex-shrink:0;"
-            onmouseover="this.style.borderColor='var(--border-hover)'"
-            onmouseout="this.style.borderColor='var(--border)'">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+          <a href={github} target="_blank" rel="noopener" class="btn btn-primary" style="width:100%;justify-content:center;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             View on GitHub
           </a>
         )}
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px;">
-        <span style={`font-family:'DM Mono',monospace;font-size:10px;padding:3px 10px;border-radius:10px;letter-spacing:0.06em;${statusColor[status]}`}>
-          {statusLabel[status]}
-        </span>
-        {tags.map(tag => (
-          <span style="font-family:'DM Mono',monospace;font-size:11px;padding:3px 10px;border-radius:10px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">{tag}</span>
-        ))}
-      </div>
-      <p style="font-size:16px;color:var(--text2);line-height:1.7;">{description}</p>
-    </div>
-
-    <!-- Two column layout -->
-    <div style="display:grid;grid-template-columns:1fr 320px;gap:40px;align-items:start;">
-
-      <!-- Left: README -->
-      <div>
-        {readmeHtml ? (
-          <div class="prose" set:html={readmeHtml} />
-        ) : (
-          <div class="prose">
-            <Content />
-          </div>
-        )}
-      </div>
-
-      <!-- Right: sidebar -->
-      <div style="display:flex;flex-direction:column;gap:20px;position:sticky;top:76px;">
-
-        <!-- Cover image -->
-        {image && (
-          <div style="border-radius:10px;overflow:hidden;border:1px solid var(--border);">
-            <img src={image} alt={title} style="width:100%;display:block;opacity:0.9;"
-              onerror="this.parentElement.style.display='none'" />
-          </div>
-        )}
-
-        <!-- Additional images -->
-        {baseImageUrl && (
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            {additionalImages.map((url, i) => (
-              <div style="border-radius:8px;overflow:hidden;border:1px solid var(--border);display:none;" class="gallery-item">
-                <img
-                  src={url}
-                  alt={`${title} image ${i + 1}`}
-                  style="width:100%;display:block;opacity:0.85;transition:opacity 0.15s;"
-                  onload="this.parentElement.style.display='block'"
-                  onerror="this.parentElement.style.display='none'"
-                  onmouseover="this.style.opacity='1'"
-                  onmouseout="this.style.opacity='0.85'"
-                />
-              </div>
-            ))}
-          </div>
-        )}
 
         <!-- 3D Model -->
         {model && (
-          <div style="border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--bg2);">
-            <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;padding:12px 14px 8px;">3D Model</p>
-            <model-viewer
-              src={model}
-              alt={`${title} 3D model`}
-              auto-rotate
-              camera-controls
-              style="width:100%;height:280px;background:transparent;"
-            ></model-viewer>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+            <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-3);letter-spacing:0.08em;text-transform:uppercase;padding:12px 16px;border-bottom:1px solid var(--border);">3D Model</p>
+            <div style="position:relative;">
+              <model-viewer
+                src={model}
+                alt={title}
+                auto-rotate
+                camera-controls
+                style="width:100%;height:240px;background:var(--surface);"
+              ></model-viewer>
+              <button
+                id="model-expand-btn"
+                data-model-src={model}
+                data-model-alt={title}
+                style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:0.04em;transition:background 0.15s;"
+                onmouseover="this.style.background='rgba(0,200,150,0.35)'"
+                onmouseout="this.style.background='rgba(0,0,0,0.5)'"
+              >⤢ Expand</button>
+            </div>
           </div>
         )}
 
-        <!-- Version history -->
+        <!-- Gallery carousel -->
+        {baseImageUrl && (
+          <div id="gallery-widget" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);">
+              <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-3);letter-spacing:0.08em;text-transform:uppercase;margin:0;">Gallery</p>
+              <span id="gallery-counter" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-3);"></span>
+            </div>
+            <div style="position:relative;">
+              <img
+                id="gallery-main"
+                src=""
+                alt=""
+                style="width:100%;height:200px;object-fit:cover;display:block;cursor:pointer;transition:opacity 0.18s;"
+                onmouseover="this.style.opacity='0.82'"
+                onmouseout="this.style.opacity='1'"
+              />
+              <button id="gallery-prev" aria-label="Previous" style="position:absolute;left:6px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.5);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">‹</button>
+              <button id="gallery-next" aria-label="Next"     style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.5);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">›</button>
+            </div>
+            <div id="gallery-dots" style="display:flex;justify-content:center;gap:6px;padding:10px;flex-wrap:wrap;"></div>
+          </div>
+        )}
+
+        <!-- Versions -->
         {versions && versions.length > 0 && (
-          <div style="padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;">
-            <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px;">Version history</p>
-            {[...versions].reverse().map((v, i) => (
-              <div style={`display:flex;gap:12px;padding:10px 0;${i > 0 ? 'border-top:1px solid var(--border);' : ''}`}>
-                <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
-                  <div style={`width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${i === 0 ? 'var(--accent2)' : 'var(--bg3)'};border:1px solid ${i === 0 ? 'var(--accent2)' : 'var(--border-hover)'};`}></div>
-                  {i < versions.length - 1 && <div style="width:1px;flex:1;background:var(--border);margin-top:4px;min-height:16px;"></div>}
-                </div>
-                <div style="flex:1;">
-                  <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:2px;">
-                    <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent2);">{v.tag}</span>
-                    <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);">{v.date}</span>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+            <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-3);letter-spacing:0.08em;text-transform:uppercase;padding:12px 16px;border-bottom:1px solid var(--border);">Versions</p>
+            <div style="padding:8px;">
+              {versions.map((v, i) => (
+                <div style={`padding:10px;border-radius:6px;${i < versions.length - 1 ? 'border-bottom:1px solid var(--border);' : ''}`}>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                    <span class="btn btn-secondary btn-sm" style="pointer-events:none;">{v.tag}</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-3);">{v.date}</span>
                   </div>
-                  <p style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px;">{v.title}</p>
-                  {v.note && <p style="font-size:11px;color:var(--text2);">{v.note}</p>}
+                  <p style="font-size:13px;color:var(--text);font-weight:500;">{v.title}</p>
+                  {v.note && <p style="font-size:12px;color:var(--text-2);margin-top:2px;">{v.note}</p>}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
 
       </div>
     </div>
-
   </main>
+
+  {model && (
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+  )}
 </Layout>
 
 <style is:global>
-  @media (max-width: 700px) {
-    main > div:last-child {
-      grid-template-columns: 1fr !important;
-    }
-  }
-  .prose { color: var(--text2); font-size: 15px; line-height: 1.75; }
-  .prose h1 { font-size: 22px; font-weight: 500; color: var(--text); margin: 0 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); letter-spacing: -0.01em; }
-  .prose h2 { font-size: 18px; font-weight: 500; color: var(--text); margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-  .prose h3 { font-size: 15px; font-weight: 500; color: var(--text); margin: 24px 0 8px; }
-  .prose p { margin-bottom: 16px; }
-  .prose ul { padding-left: 20px; margin-bottom: 16px; list-style: disc; }
-  .prose ol { padding-left: 20px; margin-bottom: 16px; list-style: decimal; }
-  .prose li { margin-bottom: 6px; }
-  .prose blockquote { border-left: 3px solid var(--border-hover); padding: 4px 0 4px 16px; margin: 0 0 16px; color: var(--text3); font-style: italic; }
-  .prose hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
-  .prose table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .prose thead { background: var(--bg3); }
-  .prose th { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: left; }
-  .prose td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text2); }
-  .prose tr:last-child td { border-bottom: none; }
-  .prose tr:hover td { background: rgba(255,255,255,0.02); }
-  .prose code { font-family: 'DM Mono', monospace; font-size: 12px; background: var(--bg3); padding: 2px 6px; border-radius: 4px; color: var(--accent); border: 1px solid var(--border); }
-  .prose pre { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; margin-bottom: 20px; }
-  .prose pre code { background: none; padding: 0; border: none; color: var(--text2); font-size: 13px; }
-  .prose a { color: var(--accent2); text-decoration: none; border-bottom: 1px solid rgba(196,169,107,0.3); transition: border-color 0.15s; }
-  .prose a:hover { border-bottom-color: var(--accent2); }
-  .prose strong { color: var(--text); font-weight: 500; }
-  .prose em { font-style: italic; }
+/* ── Prose ──────────────────────────────────────────────────────────────── */
+.prose h1 { font-size:22px;font-weight:500;color:var(--text);margin:0 0 16px;padding-bottom:8px;border-bottom:1px solid var(--border);letter-spacing:-0.01em; }
+.prose h2 { font-size:18px;font-weight:500;color:var(--text);margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border); }
+.prose h3 { font-size:15px;font-weight:500;color:var(--text);margin:24px 0 8px; }
+.prose p  { color:var(--text-2);margin-bottom:16px;line-height:1.7; }
+.prose ul,.prose ol { padding-left:20px;margin-bottom:16px;color:var(--text-2); }
+.prose ul { list-style:disc; }
+.prose ol { list-style:decimal; }
+.prose li { margin-bottom:6px; }
+.prose table { width:100%;border-collapse:separate;border-spacing:0;margin-bottom:24px;font-size:13px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface-2); }
+.prose thead tr { background:var(--surface-3); }
+.prose th { font-family:'DM Mono',monospace;font-size:10px;color:var(--text-3);letter-spacing:0.08em;text-transform:uppercase;padding:10px 14px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);text-align:left; }
+.prose th:last-child { border-right:none; }
+.prose td { padding:10px 14px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);color:var(--text-2); }
+.prose td:last-child { border-right:none; }
+.prose tr:last-child td { border-bottom:none; }
+.prose strong { color:var(--text);font-weight:500; }
+.prose code { font-family:'DM Mono',monospace;font-size:12px;background:var(--surface-2);padding:2px 6px;border-radius:4px;color:var(--accent);border:1px solid var(--border); }
+.prose pre { background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;margin-bottom:20px; }
+.prose pre code { background:none;padding:0;border:none;color:var(--text-2);font-size:13px; }
+.prose a { color:var(--accent);text-decoration:none;border-bottom:1px solid var(--border-strong);transition:border-color 0.15s; }
+.prose a:hover { border-bottom-color:var(--accent); }
+.prose hr { border:none;border-top:1px solid var(--border);margin:32px 0; }
+.prose blockquote { border-left:3px solid var(--border-strong);padding:4px 0 4px 16px;margin:0 0 16px;color:var(--text-3);font-style:italic; }
+@media (max-width: 768px) { .prose-layout { grid-template-columns: 1fr !important; } }
+
+/* ── Lightbox ────────────────────────────────────────────────────────────── */
+#lightbox {
+  position: fixed; inset: 0; z-index: 999;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+#lightbox.open { opacity: 1; pointer-events: all; }
+
+#lightbox-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0, 15, 10, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+#lightbox-container {
+  position: relative; z-index: 1;
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: 18px;
+  overflow: hidden;
+  width: min(84vw, 940px);
+  max-height: 84vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 0 0 1px rgba(0,200,150,0.12), 0 32px 64px rgba(0,0,0,0.55);
+  transform: scale(0.95);
+  transition: transform 0.22s ease;
+}
+#lightbox.open #lightbox-container { transform: scale(1); }
+
+#lightbox-content {
+  flex: 1; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 340px;
+  max-height: calc(84vh - 44px);
+  background: #0f0f0f;
+}
+#lightbox-content img { width:100%; height:100%; object-fit:contain; display:block; }
+#lightbox-content model-viewer { width:100%; height:100%; min-height:460px; background:#0f0f0f; }
+
+#lightbox-counter {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  color: var(--accent); letter-spacing: 0.06em;
+  text-align: center; padding: 10px 16px;
+  border-top: 1px solid rgba(0,200,150,0.2);
+  min-height: 36px; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,200,150,0.04);
+}
+
+#lightbox-ui { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+
+#lightbox-close {
+  position: absolute;
+  top: calc(50% - min(42vh, 470px) + 10px);
+  right: calc(50% - min(42vw, 470px) + 10px);
+  pointer-events: all;
+  background: var(--bg); border: 1px solid rgba(0,200,150,0.35); color: var(--accent);
+  width: 32px; height: 32px; border-radius: 50%; font-size: 13px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+#lightbox-close:hover { background: rgba(0,200,150,0.15); border-color: var(--accent); }
+
+#lightbox-prev, #lightbox-next {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  pointer-events: all;
+  background: var(--bg); border: 1px solid rgba(0,200,150,0.3); color: var(--accent);
+  width: 40px; height: 40px; border-radius: 50%; font-size: 22px; cursor: pointer;
+  display: none; align-items: center; justify-content: center; line-height: 1;
+  transition: background 0.15s, border-color 0.15s;
+}
+#lightbox-prev:hover, #lightbox-next:hover { background: rgba(0,200,150,0.15); border-color: var(--accent); }
+#lightbox-prev { left: calc(50% - min(42vw, 470px) + 10px); }
+#lightbox-next { right: calc(50% - min(42vw, 470px) + 10px); }
+#lightbox-prev.show, #lightbox-next.show { display: flex; }
+
+/* ── Gallery dots ────────────────────────────────────────────────────────── */
+.gdot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border-strong);
+  cursor: pointer; border: none; padding: 0; flex-shrink: 0;
+  transition: background 0.15s, transform 0.15s;
+}
+.gdot.active { background: var(--accent); transform: scale(1.4); }
 </style>
+
+<script>
+// ── Gallery ───────────────────────────────────────────────────────────────
+const coverImg       = document.getElementById('cover-img')       as HTMLImageElement | null;
+const galleryWidget  = document.getElementById('gallery-widget')  as HTMLDivElement | null;
+const galleryMain    = document.getElementById('gallery-main')    as HTMLImageElement | null;
+const galleryCounter = document.getElementById('gallery-counter') as HTMLSpanElement | null;
+const galleryDots    = document.getElementById('gallery-dots')    as HTMLDivElement | null;
+const galleryPrev    = document.getElementById('gallery-prev')    as HTMLButtonElement | null;
+const galleryNext    = document.getElementById('gallery-next')    as HTMLButtonElement | null;
+
+const imgBase = coverImg?.src.substring(0, coverImg.src.lastIndexOf('/')) ?? '';
+
+let loadedImages: string[] = [];
+let curIdx = 0;
+let autoTimer: ReturnType<typeof setInterval> | null = null;
+
+async function probeImages() {
+  if (!imgBase || !galleryWidget) return;
+  const candidates = Array.from({ length: 10 }, (_, i) =>
+    `${imgBase}/${String(i + 1).padStart(2, '0')}.jpg`
+  );
+  const settled = await Promise.all(
+    candidates.map(src => new Promise<string | null>(res => {
+      const img = new Image();
+      img.onload  = () => res(src);
+      img.onerror = () => res(null);
+      img.src = src;
+    }))
+  );
+  loadedImages = settled.filter(Boolean) as string[];
+  if (loadedImages.length === 0) return;
+  galleryWidget.style.display = 'block';
+  buildDots();
+  showSlide(0);
+  startAuto();
+}
+
+function buildDots() {
+  if (!galleryDots) return;
+  galleryDots.innerHTML = '';
+  loadedImages.forEach((_, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'gdot' + (i === 0 ? ' active' : '');
+    btn.setAttribute('aria-label', `Image ${i + 1}`);
+    btn.addEventListener('click', () => { showSlide(i); resetAuto(); });
+    galleryDots.appendChild(btn);
+  });
+}
+
+function showSlide(idx: number) {
+  if (!galleryMain || loadedImages.length === 0) return;
+  curIdx = (idx + loadedImages.length) % loadedImages.length;
+  galleryMain.style.opacity = '0';
+  setTimeout(() => {
+    galleryMain!.src = loadedImages[curIdx];
+    galleryMain!.alt = `Gallery image ${curIdx + 1}`;
+    galleryMain!.style.opacity = '1';
+  }, 160);
+  if (galleryCounter) galleryCounter.textContent = `${curIdx + 1} / ${loadedImages.length}`;
+  document.querySelectorAll('.gdot').forEach((d, i) => d.classList.toggle('active', i === curIdx));
+}
+
+function startAuto() { autoTimer = setInterval(() => showSlide(curIdx + 1), 3500); }
+function resetAuto()  { if (autoTimer) clearInterval(autoTimer); startAuto(); }
+
+galleryPrev?.addEventListener('click', () => { showSlide(curIdx - 1); resetAuto(); });
+galleryNext?.addEventListener('click', () => { showSlide(curIdx + 1); resetAuto(); });
+
+// ── Lightbox ──────────────────────────────────────────────────────────────
+const lightbox   = document.getElementById('lightbox')          as HTMLDivElement;
+const lbBackdrop = document.getElementById('lightbox-backdrop') as HTMLDivElement;
+const lbContent  = document.getElementById('lightbox-content')  as HTMLDivElement;
+const lbClose    = document.getElementById('lightbox-close')    as HTMLButtonElement;
+const lbPrev     = document.getElementById('lightbox-prev')     as HTMLButtonElement;
+const lbNext     = document.getElementById('lightbox-next')     as HTMLButtonElement;
+const lbCounter  = document.getElementById('lightbox-counter')  as HTMLDivElement;
+
+let lbImages: string[] = [];
+let lbIdx = 0;
+let lbIsModel = false;
+
+async function buildLbImages() {
+  const imgs: string[] = [];
+  if (coverImg && coverImg.naturalWidth > 0) imgs.push(coverImg.src);
+  imgs.push(...loadedImages);
+  lbImages = imgs;
+}
+
+async function openImage(startIdx: number) {
+  await buildLbImages();
+  lbIsModel = false;
+  lbIdx = Math.max(0, Math.min(startIdx, lbImages.length - 1));
+  renderLbImage();
+  lbOpen();
+}
+
+function openModel(src: string, alt: string) {
+  lbIsModel = true;
+  lbContent.innerHTML = '';
+  const mv = document.createElement('model-viewer') as any;
+  mv.setAttribute('src', src);
+  mv.setAttribute('alt', alt);
+  mv.setAttribute('auto-rotate', '');
+  mv.setAttribute('camera-controls', '');
+  mv.style.cssText = 'width:100%;height:100%;min-height:460px;background:#0f0f0f;';
+  lbContent.appendChild(mv);
+  lbPrev.classList.remove('show');
+  lbNext.classList.remove('show');
+  lbCounter.textContent = '3D Model — drag to rotate';
+  lbOpen();
+}
+
+function renderLbImage() {
+  lbContent.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = lbImages[lbIdx];
+  img.alt = `Image ${lbIdx + 1}`;
+  lbContent.appendChild(img);
+  const multi = lbImages.length > 1;
+  lbCounter.textContent = multi ? `${lbIdx + 1} / ${lbImages.length}` : '';
+  lbPrev.classList.toggle('show', multi);
+  lbNext.classList.toggle('show', multi);
+}
+
+function lbOpen() {
+  lightbox.classList.add('open');
+  lightbox.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+function lbClose_fn() {
+  lightbox.classList.remove('open');
+  lightbox.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  setTimeout(() => { lbContent.innerHTML = ''; }, 240);
+}
+
+lbClose.addEventListener('click', lbClose_fn);
+lbBackdrop.addEventListener('click', lbClose_fn);
+lbPrev.addEventListener('click', () => { lbIdx = (lbIdx - 1 + lbImages.length) % lbImages.length; renderLbImage(); });
+lbNext.addEventListener('click', () => { lbIdx = (lbIdx + 1) % lbImages.length; renderLbImage(); });
+document.addEventListener('keydown', e => {
+  if (!lightbox.classList.contains('open')) return;
+  if (e.key === 'Escape') lbClose_fn();
+  if (!lbIsModel && e.key === 'ArrowLeft')  { lbIdx = (lbIdx - 1 + lbImages.length) % lbImages.length; renderLbImage(); }
+  if (!lbIsModel && e.key === 'ArrowRight') { lbIdx = (lbIdx + 1) % lbImages.length; renderLbImage(); }
+});
+
+// Wire: cover image
+coverImg?.addEventListener('click', () => openImage(0));
+
+// Wire: gallery image
+galleryMain?.addEventListener('click', async () => {
+  await buildLbImages();
+  const galleryLbIdx = lbImages.indexOf(loadedImages[curIdx]);
+  openImage(galleryLbIdx >= 0 ? galleryLbIdx : 0);
+});
+
+// Wire: 3D model expand button
+document.getElementById('model-expand-btn')?.addEventListener('click', e => {
+  const btn = e.currentTarget as HTMLElement;
+  openModel(btn.dataset.modelSrc ?? '', btn.dataset.modelAlt ?? 'Model');
+});
+
+probeImages();
+</script>

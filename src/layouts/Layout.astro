@@ -1,13 +1,17 @@
 ---
-import '../styles/global.css'
+import '../styles/global.css';
 
 interface Props {
   title?: string;
   description?: string;
 }
 
-const { title = 'Paul Thillier', description = 'Engineering portfolio — hardware, embedded systems, and automotive projects.' } = Astro.props;
+const {
+  title = 'Paul Thillier',
+  description = 'Engineering portfolio — hardware, embedded systems, and automotive projects.'
+} = Astro.props;
 ---
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +21,20 @@ const { title = 'Paul Thillier', description = 'Engineering portfolio — hardwa
   <title>{title}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <!--
+    Flash prevention: runs synchronously before first paint.
+    Reads localStorage and sets data-theme on <html> immediately,
+    so the correct theme CSS is applied before any content renders.
+  -->
+  <script is:inline>
+    (function() {
+      try {
+        var theme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch(e) {}
+    })();
+  </script>
 </head>
 <body>
   <slot />
