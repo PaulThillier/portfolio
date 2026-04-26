@@ -33,6 +33,9 @@ const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith
       </div>
     </div>
 
+    <!-- Tools — external site -->
+    <a href="https://tools.paulthillier.dev" class="nav-link" target="_blank" rel="noopener noreferrer">Tools ↗</a>
+
     <a href="/resume.pdf" class="nav-link" target="_blank" rel="noopener">Resume</a>
 
     <a href="https://github.com/PaulThillier" class="nav-link nav-github" target="_blank" rel="noopener">
@@ -62,6 +65,7 @@ const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith
     <a href="/#projects" class="mobile-link">All Projects</a>
     <a href="/about"    class={`mobile-link ${isActive('/about')    ? 'mobile-active' : ''}`}>About</a>
     <a href="/robotics" class={`mobile-link ${isActive('/robotics') ? 'mobile-active' : ''}`}>Robotics</a>
+    <a href="https://tools.paulthillier.dev" class="mobile-link" target="_blank" rel="noopener noreferrer">Tools ↗</a>
     <a href="/resume.pdf" class="mobile-link" target="_blank" rel="noopener">Resume ↗</a>
     <a href="/contact"  class={`mobile-link ${isActive('/contact')  ? 'mobile-active' : ''}`}>Contact</a>
     <a href="https://github.com/PaulThillier" class="mobile-link" target="_blank" rel="noopener">GitHub ↗</a>
