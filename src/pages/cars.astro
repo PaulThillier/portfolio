@@ -204,10 +204,6 @@ const builds = [
       <div class="grease-stain stain-2"></div>
     </div>
     <div class="hero-content">
-      <div class="hero-eyebrow">
-        <span class="wrench-icon">🔧</span>
-        <span class="eyebrow-text">Shop Log</span>
-      </div>
       <h1 class="hero-title">
         <span class="title-line-1">Classic</span>
         <span class="title-line-2">Builds.</span>
@@ -340,14 +336,11 @@ const builds = [
   <!-- Footer note -->
   <section class="cars-footer-note">
     <p>
-      All work done at <a
-        href="https://desertdawgautorepair.com"
-        target="_blank"
-        rel="noopener">Desert Dawg Auto Repair</a
-      >. This is the hobby side. The circuits side is <a href="/projects"
-        >over here</a
-      >.
-    </p>
+      All work done at href="https://desertdawgautorepair.com" target="_blank"
+      rel="noopener">Desert Dawg Auto Repair
+    </p>. This is the hobby side. The circuits side is <a href="/projects"
+      >over here</a
+    >.
   </section>
 </Layout>
 
@@ -416,22 +409,6 @@ const builds = [
     max-width: 680px;
   }
 
-  .hero-eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    font-family: "Courier New", monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--text-3);
-  }
-
-  .wrench-icon {
-    font-size: 1rem;
-  }
-
   .hero-title {
     margin: 0 0 24px;
     line-height: 1;
@@ -442,13 +419,14 @@ const builds = [
 
   .title-line-1 {
     display: block;
-    color: var(--text-2);
+    color: var(--accent);
+    opacity: 0.7;
   }
 
   .title-line-2 {
     display: block;
-    color: var(--text);
-    -webkit-text-stroke: 2px var(--text);
+    color: var(--accent);
+    -webkit-text-stroke: 2px var(--accent);
   }
 
   .hero-desc {
