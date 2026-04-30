@@ -1,170 +1,179 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Nav from '../components/Nav.astro';
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
 
 const currentPath = Astro.url.pathname;
 
 const builds = [
   {
-    id: 'blazer-72',
-    folder: '1972 Blazer',
-    year: '1972',
-    make: 'Chevrolet',
-    model: 'Blazer',
-    subtitle: 'K5 Full-Size',
-    status: 'Completed',
-    statusClass: 'status-done',
-    summary: 'Full restomod on a K5 Blazer. Pretty much every system got touched. Swapped the carb for a Holley Sniper 2 EFI, rebuilt the rear end and transfer case, and put in Dakota Digital gauges.',
+    id: "blazer-72",
+    folder: "1972 Blazer",
+    year: "1972",
+    make: "Chevrolet",
+    model: "Blazer",
+    subtitle: "K5 Full-Size",
+    status: "Completed",
+    statusClass: "status-done",
+    summary:
+      "Full restomod on a K5 Blazer. Pretty much every system got touched. Swapped the carb for a Holley Sniper 2 EFI, rebuilt the rear end and transfer case, and put in Dakota Digital gauges.",
     specs: [
-      { label: 'Engine', value: 'Chevy V8 + Holley Sniper 2' },
-      { label: 'Brakes', value: 'Full Wilwood system' },
-      { label: 'Gauges', value: 'Dakota Digital' },
-      { label: 'Transfer Case', value: 'Full rebuild' },
+      { label: "Engine", value: "Chevy V8 + Holley Sniper 2" },
+      { label: "Brakes", value: "Full Wilwood system" },
+      { label: "Gauges", value: "Dakota Digital" },
+      { label: "Transfer Case", value: "Full rebuild" },
     ],
     highlights: [
-      'Full Painless wiring harness install',
-      'Full front suspension rebuild',
-      'Full engine rebuild + Holley Sniper 2 EFI install, timing & tuning',
-      'Full steering rebuild (excl. PS pump)',
-      'Serpentine belt conversion',
-      'Full Wilwood brake system install',
-      'Engine bay painted matt black + dress up',
-      'Full rear end rebuild and painting',
-      'Transfer case complete restoration and painting',
-      'RetroSound radio + Infinity speakers',
-      'Dakota Digital gauges installed',
+      "Full Painless wiring harness install",
+      "Full front suspension rebuild",
+      "Full engine rebuild + Holley Sniper 2 EFI install, timing & tuning",
+      "Full steering rebuild (excl. PS pump)",
+      "Serpentine belt conversion",
+      "Full Wilwood brake system install",
+      "Engine bay painted matt black + dress up",
+      "Full rear end rebuild and painting",
+      "Transfer case complete restoration and painting",
+      "RetroSound radio + Infinity speakers",
+      "Dakota Digital gauges installed",
     ],
   },
   {
-    id: 'corvette-70',
-    folder: '1970 Corvette',
-    year: '1970',
-    make: 'Chevrolet',
-    model: 'Corvette',
-    subtitle: 'C3 Stingray',
-    status: 'Completed',
-    statusClass: 'status-done',
-    summary: 'My third C3 restoration. At this point the vacuum and electrical systems were pretty familiar territory. Full mechanical and electrical rebuild, with a lot of time spent on the vacuum-operated headlights and wiper door.',
+    id: "corvette-70",
+    folder: "1970 Corvette",
+    year: "1970",
+    make: "Chevrolet",
+    model: "Corvette",
+    subtitle: "C3 Stingray",
+    status: "Completed",
+    statusClass: "status-done",
+    summary:
+      "My third C3 restoration. At this point the vacuum and electrical systems were pretty familiar territory. Full mechanical and electrical rebuild, with a lot of time spent on the vacuum-operated headlights and wiper door.",
     specs: [
-      { label: 'Engine', value: 'Chevy 350ci' },
-      { label: 'Carb', value: 'Edelbrock' },
-      { label: 'Brakes', value: 'Wilwood braided lines' },
-      { label: 'Audio', value: 'RetroSound + Kicker' },
+      { label: "Engine", value: "Chevy 350ci" },
+      { label: "Carb", value: "Edelbrock" },
+      { label: "Brakes", value: "Wilwood braided lines" },
+      { label: "Audio", value: "RetroSound + Kicker" },
     ],
     highlights: [
-      'Full Painless wiring harness install',
-      'Full front suspension rebuild, sandblasted and repainted all components',
-      'Full engine rebuild',
-      'Full steering rebuild (excl. PS pump)',
-      'Replaced alternator, starter, and water pump',
-      'Rebuilt master cylinder, painted matt black',
-      'Replaced both front calipers + Wilwood braided lines',
-      'Full vacuum system rebuild for vacuum headlights and wiper door',
-      'Engine bay painted matt black + dress up',
-      'Edelbrock carburetor install, timing and tuning',
-      'RetroSound radio + Kicker speakers',
-      'Replaced ammeter with voltage gauge',
+      "Full Painless wiring harness install",
+      "Full front suspension rebuild, sandblasted and repainted all components",
+      "Full engine rebuild",
+      "Full steering rebuild (excl. PS pump)",
+      "Replaced alternator, starter, and water pump",
+      "Rebuilt master cylinder, painted matt black",
+      "Replaced both front calipers + Wilwood braided lines",
+      "Full vacuum system rebuild for vacuum headlights and wiper door",
+      "Engine bay painted matt black + dress up",
+      "Edelbrock carburetor install, timing and tuning",
+      "RetroSound radio + Kicker speakers",
+      "Replaced ammeter with voltage gauge",
     ],
   },
   {
-    id: 'corvette-73',
-    folder: '1973 Corvette',
-    year: '1973',
-    make: 'Chevrolet',
-    model: 'Corvette',
-    subtitle: 'C3',
-    status: 'Completed',
-    statusClass: 'status-done',
-    summary: 'Second C3 build. Focused mostly on the electrical and audio side while keeping the factory look. Also got side pipes, which sound great.',
+    id: "corvette-73",
+    folder: "1973 Corvette",
+    year: "1973",
+    make: "Chevrolet",
+    model: "Corvette",
+    subtitle: "C3",
+    status: "Completed",
+    statusClass: "status-done",
+    summary:
+      "Second C3 build. Focused mostly on the electrical and audio side while keeping the factory look. Also got side pipes, which sound great.",
     specs: [
-      { label: 'Belt', value: 'Serpentine conversion' },
-      { label: 'Gauges', value: 'Dakota Digital' },
-      { label: 'Audio', value: 'Full Infinity system' },
-      { label: 'Exhaust', value: 'Side pipes' },
+      { label: "Belt", value: "Serpentine conversion" },
+      { label: "Gauges", value: "Dakota Digital" },
+      { label: "Audio", value: "Full Infinity system" },
+      { label: "Exhaust", value: "Side pipes" },
     ],
     highlights: [
-      'Full Painless wiring harness install',
-      'Front serpentine belt conversion kit install',
-      'Full vacuum system rebuild for vacuum headlights and wiper door',
-      'Engine bay painted matt black',
-      'Sound deadening install',
-      'Dakota Digital gauges installed',
-      'Replaced starter',
-      'Engine timing and carb tuning',
-      'Full Infinity sound system installed',
-      'Side pipes installed',
+      "Full Painless wiring harness install",
+      "Front serpentine belt conversion kit install",
+      "Full vacuum system rebuild for vacuum headlights and wiper door",
+      "Engine bay painted matt black",
+      "Sound deadening install",
+      "Dakota Digital gauges installed",
+      "Replaced starter",
+      "Engine timing and carb tuning",
+      "Full Infinity sound system installed",
+      "Side pipes installed",
     ],
   },
   {
-    id: 'corvette-59',
-    folder: '1959 Corvette',
-    year: '1959',
-    make: 'Chevrolet',
-    model: 'Corvette',
-    subtitle: 'C1',
-    status: 'Completed',
-    statusClass: 'status-done',
-    summary: 'Electrical diagnosis and repairs on a C1. Swapped in Holley RetroBright headlights and tracked down a wiring fault in the amp.',
+    id: "corvette-59",
+    folder: "1959 Corvette",
+    year: "1959",
+    make: "Chevrolet",
+    model: "Corvette",
+    subtitle: "C1",
+    status: "Completed",
+    statusClass: "status-done",
+    summary:
+      "Electrical diagnosis and repairs on a C1. Swapped in Holley RetroBright headlights and tracked down a wiring fault in the amp.",
     specs: [
-      { label: 'Type', value: 'Electrical diagnosis' },
-      { label: 'Headlights', value: 'Holley RetroBrights' },
-      { label: 'Audio', value: 'Amplifier rewire' },
-      { label: 'Scope', value: 'Targeted repairs' },
+      { label: "Type", value: "Electrical diagnosis" },
+      { label: "Headlights", value: "Holley RetroBrights" },
+      { label: "Audio", value: "Amplifier rewire" },
+      { label: "Scope", value: "Targeted repairs" },
     ],
     highlights: [
-      'Full electrical diagnosis',
-      'Front headlights replaced with Holley RetroBrights',
-      'Fixed amplifier wiring',
+      "Full electrical diagnosis",
+      "Front headlights replaced with Holley RetroBrights",
+      "Fixed amplifier wiring",
     ],
   },
   {
-    id: 'gmc-50s',
+    id: "gmc-50s",
     folder: "1950's GMC",
-    year: '1950s',
-    make: 'GMC',
-    model: 'Pickup',
-    subtitle: '6V to 12V Conversion',
-    status: 'Completed',
-    statusClass: 'status-done',
-    summary: 'Old farm truck that needed a full electrical update. Converted it from 6V to 12V, rebuilt the engine, and added an electric fan since it was running hot in low gear.',
+    year: "1950s",
+    make: "GMC",
+    model: "Pickup",
+    subtitle: "6V to 12V Conversion",
+    status: "Completed",
+    statusClass: "status-done",
+    summary:
+      "Old farm truck that needed a full electrical update. Converted it from 6V to 12V, rebuilt the engine, and added an electric fan since it was running hot in low gear.",
     specs: [
-      { label: 'Electrical', value: '6V to 12V conversion' },
-      { label: 'Wiring', value: 'Full Painless harness' },
-      { label: 'Cooling', value: 'Electric fan added' },
-      { label: 'Use', value: 'Farm vehicle' },
+      { label: "Electrical", value: "6V to 12V conversion" },
+      { label: "Wiring", value: "Full Painless harness" },
+      { label: "Cooling", value: "Electric fan added" },
+      { label: "Use", value: "Farm vehicle" },
     ],
     highlights: [
-      'Full Painless wiring harness install (6V to 12V conversion)',
-      'Engine restoration and tuning',
-      'Electric fan added for low-gear temperature management',
+      "Full Painless wiring harness install (6V to 12V conversion)",
+      "Engine restoration and tuning",
+      "Electric fan added for low-gear temperature management",
     ],
   },
   {
-    id: 'jaguar-70s',
-    folder: '1970s Jaguar',
-    year: '1970s',
-    make: 'Jaguar',
-    model: 'Sedan',
-    subtitle: '',
-    status: 'Completed',
-    statusClass: 'status-done',
-    summary: 'Fuel system work on a 70s Jaguar. Rebuilt the fuel delivery system and cold start injector, then tuned the engine.',
+    id: "jaguar-70s",
+    folder: "1970s Jaguar",
+    year: "1970s",
+    make: "Jaguar",
+    model: "Sedan",
+    subtitle: "",
+    status: "Completed",
+    statusClass: "status-done",
+    summary:
+      "Fuel system work on a 70s Jaguar. Rebuilt the fuel delivery system and cold start injector, then tuned the engine.",
     specs: [
-      { label: 'System', value: 'Fuel system rebuild' },
-      { label: 'Injector', value: 'Cold start rebuild' },
-      { label: 'Tune', value: 'Engine tuning' },
-      { label: 'Origin', value: 'British' },
+      { label: "System", value: "Fuel system rebuild" },
+      { label: "Injector", value: "Cold start rebuild" },
+      { label: "Tune", value: "Engine tuning" },
+      { label: "Origin", value: "British" },
     ],
     highlights: [
-      'Fuel system rebuild',
-      'Cold start injector rebuilt',
-      'Engine tuning',
+      "Fuel system rebuild",
+      "Cold start injector rebuilt",
+      "Engine tuning",
     ],
   },
 ];
 ---
 
-<Layout title="Classic Builds — Paul Thillier" description="Classic car restoration and rebuild projects by Paul Thillier.">
+<Layout
+  title="Classic Builds — Paul Thillier"
+  description="Classic car restoration and rebuild projects by Paul Thillier."
+>
   <Nav currentPath={currentPath} />
 
   <!-- Lightbox -->
@@ -182,8 +191,8 @@ const builds = [
     </div>
     <div id="car-lb-ui">
       <button id="car-lb-close" aria-label="Close">✕</button>
-      <button id="car-lb-prev"  aria-label="Previous">‹</button>
-      <button id="car-lb-next"  aria-label="Next">›</button>
+      <button id="car-lb-prev" aria-label="Previous">‹</button>
+      <button id="car-lb-next" aria-label="Next">›</button>
     </div>
   </div>
 
@@ -204,7 +213,15 @@ const builds = [
         <span class="title-line-2">Builds.</span>
       </h1>
       <p class="hero-desc">
-        Wrenching on American iron is how I got into problem-solving before circuits ever entered the picture. These are the builds: body-off restorations, drivetrain rebuilds, and one very crusty British sedan.
+        My best friend had a '66 Impala in high school, and that car is what
+        sparked my interest in classic cars. From there I developed a genuine
+        passion for how these machines work, and spent a lot of time learning
+        the ins and outs of keeping them running right. At car shows, the builds
+        with flawless paint and immaculate interiors are consistently let down
+        by messy electrical work — exposed wiring, poorly routed runs, and
+        aftermarket additions that were clearly an afterthought. I started
+        focusing on that gap: doing electrical work that's clean, professional,
+        and invisible enough that it doesn't compete with the rest of the build.
       </p>
       <div class="hero-stats">
         <div class="stat">
@@ -237,76 +254,100 @@ const builds = [
   <!-- Build Cards -->
   <section class="builds-section">
     <div class="builds-container">
-      {builds.map((build, i) => (
-        <article class={`build-card ${i % 2 === 1 ? 'card-reverse' : ''}`}>
-          <div class="card-image-side">
-            <div class="car-carousel" data-folder={build.folder} data-cover={`https://raw.githubusercontent.com/PaulThillier/car-restorations/main/${encodeURIComponent(build.folder)}/Cover.jpg`}>
-              <img
-                class="car-img"
-                src={`https://raw.githubusercontent.com/PaulThillier/car-restorations/main/${encodeURIComponent(build.folder)}/Cover.jpg`}
-                alt={`${build.year} ${build.make} ${build.model}`}
-                loading="lazy"
-              />
-              <div class="car-gradient"></div>
-              <button class="car-arrow car-prev" aria-label="Previous">‹</button>
-              <button class="car-arrow car-next" aria-label="Next">›</button>
-              <div class="car-bar">
-                <span class="car-counter"></span>
-                <div class="car-toggle" style="display:none">
-                  <button class="tog" data-mode="after">After</button>
-                  <button class="tog" data-mode="before">Before</button>
+      {
+        builds.map((build, i) => (
+          <article class={`build-card ${i % 2 === 1 ? "card-reverse" : ""}`}>
+            <div class="card-image-side">
+              <div
+                class="car-carousel"
+                data-folder={build.folder}
+                data-cover={`https://raw.githubusercontent.com/PaulThillier/car-restorations/main/${encodeURIComponent(build.folder)}/Cover.jpg`}
+              >
+                <img
+                  class="car-img"
+                  src={`https://raw.githubusercontent.com/PaulThillier/car-restorations/main/${encodeURIComponent(build.folder)}/Cover.jpg`}
+                  alt={`${build.year} ${build.make} ${build.model}`}
+                  loading="lazy"
+                />
+                <div class="car-gradient" />
+                <button class="car-arrow car-prev" aria-label="Previous">
+                  ‹
+                </button>
+                <button class="car-arrow car-next" aria-label="Next">
+                  ›
+                </button>
+                <div class="car-bar">
+                  <span class="car-counter" />
+                  <div class="car-toggle" style="display:none">
+                    <button class="tog" data-mode="after">
+                      After
+                    </button>
+                    <button class="tog" data-mode="before">
+                      Before
+                    </button>
+                  </div>
+                </div>
+                <div class="bolt-corners">
+                  <span class="bolt tl">◎</span>
+                  <span class="bolt tr">◎</span>
+                  <span class="bolt bl">◎</span>
+                  <span class="bolt br">◎</span>
                 </div>
               </div>
-              <div class="bolt-corners">
-                <span class="bolt tl">◎</span>
-                <span class="bolt tr">◎</span>
-                <span class="bolt bl">◎</span>
-                <span class="bolt br">◎</span>
+            </div>
+
+            <div class="card-info-side">
+              <div class="card-header">
+                <div class="year-tag">{build.year}</div>
+                <span class={`status-badge ${build.statusClass}`}>
+                  {build.status}
+                </span>
               </div>
-            </div>
-          </div>
 
-          <div class="card-info-side">
-            <div class="card-header">
-              <div class="year-tag">{build.year}</div>
-              <span class={`status-badge ${build.statusClass}`}>{build.status}</span>
-            </div>
+              <h2 class="build-title">
+                {build.make} <span class="model-accent">{build.model}</span>
+                <span class="build-subtitle">{build.subtitle}</span>
+              </h2>
 
-            <h2 class="build-title">
-              {build.make} <span class="model-accent">{build.model}</span>
-              <span class="build-subtitle">{build.subtitle}</span>
-            </h2>
+              <p class="build-summary">{build.summary}</p>
 
-            <p class="build-summary">{build.summary}</p>
-
-            <div class="specs-grid">
-              {build.specs.map(spec => (
-                <div class="spec-item">
-                  <span class="spec-label">{spec.label}</span>
-                  <span class="spec-value">{spec.value}</span>
-                </div>
-              ))}
-            </div>
-
-            <div class="highlights-section">
-              <div class="highlights-label">
-                <span class="hl-icon">▸</span> Work Log
-              </div>
-              <ul class="highlights-list">
-                {build.highlights.map(h => (
-                  <li class="highlight-item">{h}</li>
+              <div class="specs-grid">
+                {build.specs.map((spec) => (
+                  <div class="spec-item">
+                    <span class="spec-label">{spec.label}</span>
+                    <span class="spec-value">{spec.value}</span>
+                  </div>
                 ))}
-              </ul>
+              </div>
+
+              <div class="highlights-section">
+                <div class="highlights-label">
+                  <span class="hl-icon">▸</span> Work Log
+                </div>
+                <ul class="highlights-list">
+                  {build.highlights.map((h) => (
+                    <li class="highlight-item">{h}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
-        </article>
-      ))}
+          </article>
+        ))
+      }
     </div>
   </section>
 
   <!-- Footer note -->
   <section class="cars-footer-note">
-    <p>All work done at <a href="https://desertdawgautorepair.com" target="_blank" rel="noopener">Desert Dawg Auto Repair</a>. This is the hobby side. The circuits side is <a href="/projects">over here</a>.</p>
+    <p>
+      All work done at <a
+        href="https://desertdawgautorepair.com"
+        target="_blank"
+        rel="noopener">Desert Dawg Auto Repair</a
+      >. This is the hobby side. The circuits side is <a href="/projects"
+        >over here</a
+      >.
+    </p>
   </section>
 </Layout>
 
@@ -348,7 +389,11 @@ const builds = [
   .stain-1 {
     width: 500px;
     height: 300px;
-    background: radial-gradient(ellipse, rgba(180, 100, 20, 0.07) 0%, transparent 70%);
+    background: radial-gradient(
+      ellipse,
+      rgba(180, 100, 20, 0.07) 0%,
+      transparent 70%
+    );
     top: -60px;
     right: 10%;
   }
@@ -356,7 +401,11 @@ const builds = [
   .stain-2 {
     width: 350px;
     height: 350px;
-    background: radial-gradient(ellipse, color-mix(in srgb, var(--accent) 6%, transparent) 0%, transparent 70%);
+    background: radial-gradient(
+      ellipse,
+      color-mix(in srgb, var(--accent) 6%, transparent) 0%,
+      transparent 70%
+    );
     bottom: 0;
     left: 5%;
   }
@@ -372,7 +421,7 @@ const builds = [
     align-items: center;
     gap: 10px;
     margin-bottom: 20px;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     font-size: 0.75rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -434,7 +483,7 @@ const builds = [
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-3);
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     margin-top: 4px;
   }
 
@@ -469,7 +518,7 @@ const builds = [
   }
 
   .badge-ring::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 6px;
     border-radius: 50%;
@@ -484,12 +533,13 @@ const builds = [
     animation: badgeSpin 30s linear infinite reverse;
   }
 
-  .badge-top, .badge-bot {
+  .badge-top,
+  .badge-bot {
     font-size: 0.6rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text-3);
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
   }
 
   .badge-center {
@@ -497,8 +547,12 @@ const builds = [
   }
 
   @keyframes badgeSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   /* ── Builds Section ── */
@@ -599,7 +653,9 @@ const builds = [
     cursor: pointer;
     border-radius: 2px;
     opacity: 0;
-    transition: opacity 0.2s, background 0.15s;
+    transition:
+      opacity 0.2s,
+      background 0.15s;
     padding: 0;
     line-height: 1;
     z-index: 2;
@@ -613,8 +669,12 @@ const builds = [
     opacity: 1;
   }
 
-  .car-prev { left: 10px; }
-  .car-next { right: 10px; }
+  .car-prev {
+    left: 10px;
+  }
+  .car-next {
+    right: 10px;
+  }
 
   .car-bar {
     position: absolute;
@@ -629,7 +689,7 @@ const builds = [
   }
 
   .car-counter {
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     font-size: 0.62rem;
     color: rgba(255, 255, 255, 0.65);
     letter-spacing: 0.12em;
@@ -642,7 +702,7 @@ const builds = [
   }
 
   .tog {
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     font-size: 0.58rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -681,10 +741,22 @@ const builds = [
     line-height: 1;
   }
 
-  .tl { top: 0; left: 0; }
-  .tr { top: 0; right: 0; }
-  .bl { bottom: 0; left: 0; }
-  .br { bottom: 0; right: 0; }
+  .tl {
+    top: 0;
+    left: 0;
+  }
+  .tr {
+    top: 0;
+    right: 0;
+  }
+  .bl {
+    bottom: 0;
+    left: 0;
+  }
+  .br {
+    bottom: 0;
+    right: 0;
+  }
 
   /* Info side */
   .card-info-side {
@@ -701,7 +773,7 @@ const builds = [
   }
 
   .year-tag {
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     font-size: 0.7rem;
     letter-spacing: 0.15em;
     color: var(--text-3);
@@ -714,7 +786,7 @@ const builds = [
     font-size: 0.65rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     padding: 4px 10px;
     border-radius: 2px;
     border: 1px solid;
@@ -759,7 +831,7 @@ const builds = [
     color: var(--text-3);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     margin-top: 4px;
   }
 
@@ -794,7 +866,7 @@ const builds = [
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--text-3);
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
   }
 
   .spec-value {
@@ -815,7 +887,7 @@ const builds = [
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--text-3);
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -843,7 +915,7 @@ const builds = [
   }
 
   .highlight-item::before {
-    content: '—';
+    content: "—";
     position: absolute;
     left: 0;
     color: var(--accent);
@@ -856,7 +928,7 @@ const builds = [
     padding: 40px 48px 80px;
     color: var(--text-3);
     font-size: 0.9rem;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     letter-spacing: 0.04em;
   }
 
@@ -910,7 +982,9 @@ const builds = [
     max-height: 84vh;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 0 1px rgba(0,200,150,0.12), 0 32px 64px rgba(0,0,0,0.55);
+    box-shadow:
+      0 0 0 1px rgba(0, 200, 150, 0.12),
+      0 32px 64px rgba(0, 0, 0, 0.55);
     transform: scale(0.95);
     transition: transform 0.22s ease;
   }
@@ -932,13 +1006,13 @@ const builds = [
     align-items: center;
     justify-content: space-between;
     padding: 10px 16px;
-    border-top: 1px solid rgba(0,200,150,0.2);
+    border-top: 1px solid rgba(0, 200, 150, 0.2);
     min-height: 36px;
-    background: rgba(0,200,150,0.04);
+    background: rgba(0, 200, 150, 0.04);
   }
 
   #car-lb-counter {
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     font-size: 11px;
     color: var(--accent);
     letter-spacing: 0.06em;
@@ -950,13 +1024,13 @@ const builds = [
   }
 
   .lb-tog {
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     font-size: 0.6rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     padding: 3px 10px;
     border-radius: 2px;
-    border: 1px solid rgba(0,200,150,0.3);
+    border: 1px solid rgba(0, 200, 150, 0.3);
     background: transparent;
     color: var(--accent);
     cursor: pointer;
@@ -964,7 +1038,7 @@ const builds = [
   }
 
   .lb-tog:hover {
-    background: rgba(0,200,150,0.1);
+    background: rgba(0, 200, 150, 0.1);
   }
 
   .lb-tog.active {
@@ -986,7 +1060,7 @@ const builds = [
     right: calc(50% - min(42vw, 470px) + 10px);
     pointer-events: all;
     background: var(--bg);
-    border: 1px solid rgba(0,200,150,0.35);
+    border: 1px solid rgba(0, 200, 150, 0.35);
     color: var(--accent);
     width: 32px;
     height: 32px;
@@ -996,21 +1070,24 @@ const builds = [
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.15s, border-color 0.15s;
+    transition:
+      background 0.15s,
+      border-color 0.15s;
   }
 
   #car-lb-close:hover {
-    background: rgba(0,200,150,0.15);
+    background: rgba(0, 200, 150, 0.15);
     border-color: var(--accent);
   }
 
-  #car-lb-prev, #car-lb-next {
+  #car-lb-prev,
+  #car-lb-next {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     pointer-events: all;
     background: var(--bg);
-    border: 1px solid rgba(0,200,150,0.3);
+    border: 1px solid rgba(0, 200, 150, 0.3);
     color: var(--accent);
     width: 40px;
     height: 40px;
@@ -1021,17 +1098,27 @@ const builds = [
     align-items: center;
     justify-content: center;
     line-height: 1;
-    transition: background 0.15s, border-color 0.15s;
+    transition:
+      background 0.15s,
+      border-color 0.15s;
   }
 
-  #car-lb-prev:hover, #car-lb-next:hover {
-    background: rgba(0,200,150,0.15);
+  #car-lb-prev:hover,
+  #car-lb-next:hover {
+    background: rgba(0, 200, 150, 0.15);
     border-color: var(--accent);
   }
 
-  #car-lb-prev { left: calc(50% - min(42vw, 470px) + 10px); }
-  #car-lb-next { right: calc(50% - min(42vw, 470px) + 10px); }
-  #car-lb-prev.show, #car-lb-next.show { display: flex; }
+  #car-lb-prev {
+    left: calc(50% - min(42vw, 470px) + 10px);
+  }
+  #car-lb-next {
+    right: calc(50% - min(42vw, 470px) + 10px);
+  }
+  #car-lb-prev.show,
+  #car-lb-next.show {
+    display: flex;
+  }
 
   /* ── Responsive ── */
   @media (max-width: 768px) {
@@ -1077,20 +1164,21 @@ const builds = [
 </style>
 
 <script>
-  const BASE = 'https://raw.githubusercontent.com/PaulThillier/car-restorations/main';
+  const BASE =
+    "https://raw.githubusercontent.com/PaulThillier/car-restorations/main";
 
   function probeImages(folderUrl: string, max = 25): Promise<string[]> {
     return Promise.all(
       Array.from({ length: max }, (_, i) => {
         const url = `${folderUrl}/${i + 1}.jpg`;
-        return new Promise<string | null>(resolve => {
+        return new Promise<string | null>((resolve) => {
           const img = new Image();
           img.onload = () => resolve(url);
           img.onerror = () => resolve(null);
           img.src = url;
         });
-      })
-    ).then(results => {
+      }),
+    ).then((results) => {
       const imgs: string[] = [];
       for (const r of results) {
         if (!r) break;
@@ -1101,140 +1189,183 @@ const builds = [
   }
 
   // ── Lightbox ────────────────────────────────────────────────────────────────
-  const lightbox   = document.getElementById('car-lightbox')   as HTMLDivElement;
-  const lbBackdrop = document.getElementById('car-lb-backdrop') as HTMLDivElement;
-  const lbImg      = document.getElementById('car-lb-img')      as HTMLImageElement;
-  const lbCounter  = document.getElementById('car-lb-counter')  as HTMLSpanElement;
-  const lbToggle   = document.getElementById('car-lb-toggle')   as HTMLDivElement;
-  const lbClose    = document.getElementById('car-lb-close')    as HTMLButtonElement;
-  const lbPrev     = document.getElementById('car-lb-prev')     as HTMLButtonElement;
-  const lbNext     = document.getElementById('car-lb-next')     as HTMLButtonElement;
-  const lbTogBtns  = lbToggle.querySelectorAll<HTMLButtonElement>('.lb-tog');
+  const lightbox = document.getElementById("car-lightbox") as HTMLDivElement;
+  const lbBackdrop = document.getElementById(
+    "car-lb-backdrop",
+  ) as HTMLDivElement;
+  const lbImg = document.getElementById("car-lb-img") as HTMLImageElement;
+  const lbCounter = document.getElementById(
+    "car-lb-counter",
+  ) as HTMLSpanElement;
+  const lbToggle = document.getElementById("car-lb-toggle") as HTMLDivElement;
+  const lbClose = document.getElementById("car-lb-close") as HTMLButtonElement;
+  const lbPrev = document.getElementById("car-lb-prev") as HTMLButtonElement;
+  const lbNext = document.getElementById("car-lb-next") as HTMLButtonElement;
+  const lbTogBtns = lbToggle.querySelectorAll<HTMLButtonElement>(".lb-tog");
 
   let lbImages: string[] = [];
   let lbAfterImages: string[] = [];
   let lbBeforeImages: string[] = [];
   let lbIdx = 0;
 
-  function openLightbox(afterImages: string[], beforeImages: string[], mode: string, startIdx: number) {
-    lbAfterImages  = afterImages;
+  function openLightbox(
+    afterImages: string[],
+    beforeImages: string[],
+    mode: string,
+    startIdx: number,
+  ) {
+    lbAfterImages = afterImages;
     lbBeforeImages = beforeImages;
-    lbImages = mode === 'before' ? beforeImages : afterImages;
-    lbIdx    = startIdx;
+    lbImages = mode === "before" ? beforeImages : afterImages;
+    lbIdx = startIdx;
 
     if (beforeImages.length > 0) {
-      lbToggle.style.display = 'flex';
-      lbTogBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+      lbToggle.style.display = "flex";
+      lbTogBtns.forEach((b) =>
+        b.classList.toggle("active", b.dataset.mode === mode),
+      );
     } else {
-      lbToggle.style.display = 'none';
+      lbToggle.style.display = "none";
     }
 
     renderLb();
-    lightbox.classList.add('open');
-    lightbox.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    lightbox.classList.add("open");
+    lightbox.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
   }
 
   function closeLightbox() {
-    lightbox.classList.remove('open');
-    lightbox.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    lightbox.classList.remove("open");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
   }
 
   function renderLb() {
     lbImg.src = lbImages[lbIdx];
     lbImg.alt = `Image ${lbIdx + 1}`;
     const multi = lbImages.length > 1;
-    lbCounter.textContent = multi ? `${lbIdx + 1} / ${lbImages.length}` : '';
-    lbPrev.classList.toggle('show', multi);
-    lbNext.classList.toggle('show', multi);
+    lbCounter.textContent = multi ? `${lbIdx + 1} / ${lbImages.length}` : "";
+    lbPrev.classList.toggle("show", multi);
+    lbNext.classList.toggle("show", multi);
   }
 
-  lbTogBtns.forEach(b => {
-    b.addEventListener('click', () => {
+  lbTogBtns.forEach((b) => {
+    b.addEventListener("click", () => {
       const mode = b.dataset.mode!;
-      lbImages = mode === 'before' ? lbBeforeImages : lbAfterImages;
+      lbImages = mode === "before" ? lbBeforeImages : lbAfterImages;
       lbIdx = 0;
-      lbTogBtns.forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+      lbTogBtns.forEach((t) =>
+        t.classList.toggle("active", t.dataset.mode === mode),
+      );
       renderLb();
     });
   });
 
-  lbClose.addEventListener('click', closeLightbox);
-  lbBackdrop.addEventListener('click', closeLightbox);
-  lbPrev.addEventListener('click',  () => { lbIdx = (lbIdx - 1 + lbImages.length) % lbImages.length; renderLb(); });
-  lbNext.addEventListener('click',  () => { lbIdx = (lbIdx + 1) % lbImages.length; renderLb(); });
-  document.addEventListener('keydown', e => {
-    if (!lightbox.classList.contains('open')) return;
-    if (e.key === 'Escape')      closeLightbox();
-    if (e.key === 'ArrowLeft')  { lbIdx = (lbIdx - 1 + lbImages.length) % lbImages.length; renderLb(); }
-    if (e.key === 'ArrowRight') { lbIdx = (lbIdx + 1) % lbImages.length; renderLb(); }
+  lbClose.addEventListener("click", closeLightbox);
+  lbBackdrop.addEventListener("click", closeLightbox);
+  lbPrev.addEventListener("click", () => {
+    lbIdx = (lbIdx - 1 + lbImages.length) % lbImages.length;
+    renderLb();
+  });
+  lbNext.addEventListener("click", () => {
+    lbIdx = (lbIdx + 1) % lbImages.length;
+    renderLb();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (!lightbox.classList.contains("open")) return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowLeft") {
+      lbIdx = (lbIdx - 1 + lbImages.length) % lbImages.length;
+      renderLb();
+    }
+    if (e.key === "ArrowRight") {
+      lbIdx = (lbIdx + 1) % lbImages.length;
+      renderLb();
+    }
   });
 
   // ── Carousels ───────────────────────────────────────────────────────────────
-  document.querySelectorAll<HTMLElement>('.car-carousel').forEach(async el => {
-    const folder = el.dataset.folder!;
-    const coverUrl = el.dataset.cover!;
-    const enc = encodeURIComponent(folder);
-    const base = `${BASE}/${enc}`;
+  document
+    .querySelectorAll<HTMLElement>(".car-carousel")
+    .forEach(async (el) => {
+      const folder = el.dataset.folder!;
+      const coverUrl = el.dataset.cover!;
+      const enc = encodeURIComponent(folder);
+      const base = `${BASE}/${enc}`;
 
-    const imgEl     = el.querySelector<HTMLImageElement>('.car-img')!;
-    const prevBtn   = el.querySelector<HTMLButtonElement>('.car-prev')!;
-    const nextBtn   = el.querySelector<HTMLButtonElement>('.car-next')!;
-    const counterEl = el.querySelector<HTMLElement>('.car-counter')!;
-    const toggleEl  = el.querySelector<HTMLElement>('.car-toggle')!;
-    const togBtns   = el.querySelectorAll<HTMLButtonElement>('.tog');
+      const imgEl = el.querySelector<HTMLImageElement>(".car-img")!;
+      const prevBtn = el.querySelector<HTMLButtonElement>(".car-prev")!;
+      const nextBtn = el.querySelector<HTMLButtonElement>(".car-next")!;
+      const counterEl = el.querySelector<HTMLElement>(".car-counter")!;
+      const toggleEl = el.querySelector<HTMLElement>(".car-toggle")!;
+      const togBtns = el.querySelectorAll<HTMLButtonElement>(".tog");
 
-    const [afterImgs, beforeImgs] = await Promise.all([
-      probeImages(`${base}/After`),
-      probeImages(`${base}/Before`),
-    ]);
+      const [afterImgs, beforeImgs] = await Promise.all([
+        probeImages(`${base}/After`),
+        probeImages(`${base}/Before`),
+      ]);
 
-    const allAfterImgs = [coverUrl, ...afterImgs];
+      const allAfterImgs = [coverUrl, ...afterImgs];
 
-    if (beforeImgs.length > 0) {
-      toggleEl.style.display = 'flex';
-    }
+      if (beforeImgs.length > 0) {
+        toggleEl.style.display = "flex";
+      }
 
-    let images = allAfterImgs;
-    let idx = 0;
+      let images = allAfterImgs;
+      let idx = 0;
 
-    function show(i: number) {
-      if (!images.length) return;
-      idx = ((i % images.length) + images.length) % images.length;
-      imgEl.style.opacity = '0.45';
-      imgEl.src = images[idx];
-      counterEl.textContent = `${idx + 1} / ${images.length}`;
-    }
+      function show(i: number) {
+        if (!images.length) return;
+        idx = ((i % images.length) + images.length) % images.length;
+        imgEl.style.opacity = "0.45";
+        imgEl.src = images[idx];
+        counterEl.textContent = `${idx + 1} / ${images.length}`;
+      }
 
-    imgEl.addEventListener('load', () => { imgEl.style.opacity = '1'; });
-
-    togBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === 'after'));
-    show(0);
-
-    prevBtn.addEventListener('click', () => show(idx - 1));
-    nextBtn.addEventListener('click', () => show(idx + 1));
-
-    togBtns.forEach(b => {
-      b.addEventListener('click', () => {
-        const mode = b.dataset.mode!;
-        images = mode === 'before' ? beforeImgs : allAfterImgs;
-        togBtns.forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
-        show(0);
+      imgEl.addEventListener("load", () => {
+        imgEl.style.opacity = "1";
       });
-    });
 
-    imgEl.addEventListener('click', () => {
-      const mode = images === beforeImgs ? 'before' : 'after';
-      openLightbox(allAfterImgs, beforeImgs, mode, idx);
-    });
+      togBtns.forEach((b) =>
+        b.classList.toggle("active", b.dataset.mode === "after"),
+      );
+      show(0);
 
-    // Touch swipe
-    let touchX = 0;
-    el.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
-    el.addEventListener('touchend', e => {
-      const dx = e.changedTouches[0].clientX - touchX;
-      if (Math.abs(dx) > 40) dx < 0 ? show(idx + 1) : show(idx - 1);
-    }, { passive: true });
-  });
+      prevBtn.addEventListener("click", () => show(idx - 1));
+      nextBtn.addEventListener("click", () => show(idx + 1));
+
+      togBtns.forEach((b) => {
+        b.addEventListener("click", () => {
+          const mode = b.dataset.mode!;
+          images = mode === "before" ? beforeImgs : allAfterImgs;
+          togBtns.forEach((t) =>
+            t.classList.toggle("active", t.dataset.mode === mode),
+          );
+          show(0);
+        });
+      });
+
+      imgEl.addEventListener("click", () => {
+        const mode = images === beforeImgs ? "before" : "after";
+        openLightbox(allAfterImgs, beforeImgs, mode, idx);
+      });
+
+      // Touch swipe
+      let touchX = 0;
+      el.addEventListener(
+        "touchstart",
+        (e) => {
+          touchX = e.touches[0].clientX;
+        },
+        { passive: true },
+      );
+      el.addEventListener(
+        "touchend",
+        (e) => {
+          const dx = e.changedTouches[0].clientX - touchX;
+          if (Math.abs(dx) > 40) dx < 0 ? show(idx + 1) : show(idx - 1);
+        },
+        { passive: true },
+      );
+    });
 </script>
