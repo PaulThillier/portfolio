@@ -1,0 +1,1240 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+
+const currentPath = Astro.url.pathname;
+
+const builds = [
+  {
+    id: 'blazer-72',
+    folder: '1972 Blazer',
+    year: '1972',
+    make: 'Chevrolet',
+    model: 'Blazer',
+    subtitle: 'K5 Full-Size',
+    status: 'Completed',
+    statusClass: 'status-done',
+    summary: 'Full restomod on a K5 Blazer. Pretty much every system got touched. Swapped the carb for a Holley Sniper 2 EFI, rebuilt the rear end and transfer case, and put in Dakota Digital gauges.',
+    specs: [
+      { label: 'Engine', value: 'Chevy V8 + Holley Sniper 2' },
+      { label: 'Brakes', value: 'Full Wilwood system' },
+      { label: 'Gauges', value: 'Dakota Digital' },
+      { label: 'Transfer Case', value: 'Full rebuild' },
+    ],
+    highlights: [
+      'Full Painless wiring harness install',
+      'Full front suspension rebuild',
+      'Full engine rebuild + Holley Sniper 2 EFI install, timing & tuning',
+      'Full steering rebuild (excl. PS pump)',
+      'Serpentine belt conversion',
+      'Full Wilwood brake system install',
+      'Engine bay painted matt black + dress up',
+      'Full rear end rebuild and painting',
+      'Transfer case complete restoration and painting',
+      'RetroSound radio + Infinity speakers',
+      'Dakota Digital gauges installed',
+    ],
+  },
+  {
+    id: 'corvette-70',
+    folder: '1970 Corvette',
+    year: '1970',
+    make: 'Chevrolet',
+    model: 'Corvette',
+    subtitle: 'C3 Stingray',
+    status: 'Completed',
+    statusClass: 'status-done',
+    summary: 'My third C3 restoration. At this point the vacuum and electrical systems were pretty familiar territory. Full mechanical and electrical rebuild, with a lot of time spent on the vacuum-operated headlights and wiper door.',
+    specs: [
+      { label: 'Engine', value: 'Chevy 350ci' },
+      { label: 'Carb', value: 'Edelbrock' },
+      { label: 'Brakes', value: 'Wilwood braided lines' },
+      { label: 'Audio', value: 'RetroSound + Kicker' },
+    ],
+    highlights: [
+      'Full Painless wiring harness install',
+      'Full front suspension rebuild, sandblasted and repainted all components',
+      'Full engine rebuild',
+      'Full steering rebuild (excl. PS pump)',
+      'Replaced alternator, starter, and water pump',
+      'Rebuilt master cylinder, painted matt black',
+      'Replaced both front calipers + Wilwood braided lines',
+      'Full vacuum system rebuild for vacuum headlights and wiper door',
+      'Engine bay painted matt black + dress up',
+      'Edelbrock carburetor install, timing and tuning',
+      'RetroSound radio + Kicker speakers',
+      'Replaced ammeter with voltage gauge',
+    ],
+  },
+  {
+    id: 'corvette-73',
+    folder: '1973 Corvette',
+    year: '1973',
+    make: 'Chevrolet',
+    model: 'Corvette',
+    subtitle: 'C3',
+    status: 'Completed',
+    statusClass: 'status-done',
+    summary: 'Second C3 build. Focused mostly on the electrical and audio side while keeping the factory look. Also got side pipes, which sound great.',
+    specs: [
+      { label: 'Belt', value: 'Serpentine conversion' },
+      { label: 'Gauges', value: 'Dakota Digital' },
+      { label: 'Audio', value: 'Full Infinity system' },
+      { label: 'Exhaust', value: 'Side pipes' },
+    ],
+    highlights: [
+      'Full Painless wiring harness install',
+      'Front serpentine belt conversion kit install',
+      'Full vacuum system rebuild for vacuum headlights and wiper door',
+      'Engine bay painted matt black',
+      'Sound deadening install',
+      'Dakota Digital gauges installed',
+      'Replaced starter',
+      'Engine timing and carb tuning',
+      'Full Infinity sound system installed',
+      'Side pipes installed',
+    ],
+  },
+  {
+    id: 'corvette-59',
+    folder: '1959 Corvette',
+    year: '1959',
+    make: 'Chevrolet',
+    model: 'Corvette',
+    subtitle: 'C1',
+    status: 'Completed',
+    statusClass: 'status-done',
+    summary: 'Electrical diagnosis and repairs on a C1. Swapped in Holley RetroBright headlights and tracked down a wiring fault in the amp.',
+    specs: [
+      { label: 'Type', value: 'Electrical diagnosis' },
+      { label: 'Headlights', value: 'Holley RetroBrights' },
+      { label: 'Audio', value: 'Amplifier rewire' },
+      { label: 'Scope', value: 'Targeted repairs' },
+    ],
+    highlights: [
+      'Full electrical diagnosis',
+      'Front headlights replaced with Holley RetroBrights',
+      'Fixed amplifier wiring',
+    ],
+  },
+  {
+    id: 'gmc-50s',
+    folder: "1950's GMC",
+    year: '1950s',
+    make: 'GMC',
+    model: 'Pickup',
+    subtitle: '6V to 12V Conversion',
+    status: 'Completed',
+    statusClass: 'status-done',
+    summary: 'Old farm truck that needed a full electrical update. Converted it from 6V to 12V, rebuilt the engine, and added an electric fan since it was running hot in low gear.',
+    specs: [
+      { label: 'Electrical', value: '6V to 12V conversion' },
+      { label: 'Wiring', value: 'Full Painless harness' },
+      { label: 'Cooling', value: 'Electric fan added' },
+      { label: 'Use', value: 'Farm vehicle' },
+    ],
+    highlights: [
+      'Full Painless wiring harness install (6V to 12V conversion)',
+      'Engine restoration and tuning',
+      'Electric fan added for low-gear temperature management',
+    ],
+  },
+  {
+    id: 'jaguar-70s',
+    folder: '1970s Jaguar',
+    year: '1970s',
+    make: 'Jaguar',
+    model: 'Sedan',
+    subtitle: '',
+    status: 'Completed',
+    statusClass: 'status-done',
+    summary: 'Fuel system work on a 70s Jaguar. Rebuilt the fuel delivery system and cold start injector, then tuned the engine.',
+    specs: [
+      { label: 'System', value: 'Fuel system rebuild' },
+      { label: 'Injector', value: 'Cold start rebuild' },
+      { label: 'Tune', value: 'Engine tuning' },
+      { label: 'Origin', value: 'British' },
+    ],
+    highlights: [
+      'Fuel system rebuild',
+      'Cold start injector rebuilt',
+      'Engine tuning',
+    ],
+  },
+];
+---
+
+<Layout title="Classic Builds — Paul Thillier" description="Classic car restoration and rebuild projects by Paul Thillier.">
+  <Nav currentPath={currentPath} />
+
+  <!-- Lightbox -->
+  <div id="car-lightbox" aria-hidden="true">
+    <div id="car-lb-backdrop"></div>
+    <div id="car-lb-container">
+      <img id="car-lb-img" src="" alt="" />
+      <div id="car-lb-footer">
+        <span id="car-lb-counter"></span>
+        <div id="car-lb-toggle" style="display:none">
+          <button class="lb-tog" data-mode="after">After</button>
+          <button class="lb-tog" data-mode="before">Before</button>
+        </div>
+      </div>
+    </div>
+    <div id="car-lb-ui">
+      <button id="car-lb-close" aria-label="Close">✕</button>
+      <button id="car-lb-prev"  aria-label="Previous">‹</button>
+      <button id="car-lb-next"  aria-label="Next">›</button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section class="cars-hero">
+    <div class="hero-bg">
+      <div class="grid-overlay"></div>
+      <div class="grease-stain stain-1"></div>
+      <div class="grease-stain stain-2"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="wrench-icon">🔧</span>
+        <span class="eyebrow-text">Shop Log</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="title-line-1">Classic</span>
+        <span class="title-line-2">Builds.</span>
+      </h1>
+      <p class="hero-desc">
+        Wrenching on American iron is how I got into problem-solving before circuits ever entered the picture. These are the builds: body-off restorations, drivetrain rebuilds, and one very crusty British sedan.
+      </p>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">6</span>
+          <span class="stat-label">Builds</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">3</span>
+          <span class="stat-label">C3 Corvettes</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">3+</span>
+          <span class="stat-label">Years wrenching</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-badge">
+      <div class="badge-ring">
+        <div class="badge-inner">
+          <span class="badge-top">Desert</span>
+          <span class="badge-center">🏁</span>
+          <span class="badge-bot">Dawg</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Build Cards -->
+  <section class="builds-section">
+    <div class="builds-container">
+      {builds.map((build, i) => (
+        <article class={`build-card ${i % 2 === 1 ? 'card-reverse' : ''}`}>
+          <div class="card-image-side">
+            <div class="car-carousel" data-folder={build.folder} data-cover={`https://raw.githubusercontent.com/PaulThillier/car-restorations/main/${encodeURIComponent(build.folder)}/Cover.jpg`}>
+              <img
+                class="car-img"
+                src={`https://raw.githubusercontent.com/PaulThillier/car-restorations/main/${encodeURIComponent(build.folder)}/Cover.jpg`}
+                alt={`${build.year} ${build.make} ${build.model}`}
+                loading="lazy"
+              />
+              <div class="car-gradient"></div>
+              <button class="car-arrow car-prev" aria-label="Previous">‹</button>
+              <button class="car-arrow car-next" aria-label="Next">›</button>
+              <div class="car-bar">
+                <span class="car-counter"></span>
+                <div class="car-toggle" style="display:none">
+                  <button class="tog" data-mode="after">After</button>
+                  <button class="tog" data-mode="before">Before</button>
+                </div>
+              </div>
+              <div class="bolt-corners">
+                <span class="bolt tl">◎</span>
+                <span class="bolt tr">◎</span>
+                <span class="bolt bl">◎</span>
+                <span class="bolt br">◎</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-info-side">
+            <div class="card-header">
+              <div class="year-tag">{build.year}</div>
+              <span class={`status-badge ${build.statusClass}`}>{build.status}</span>
+            </div>
+
+            <h2 class="build-title">
+              {build.make} <span class="model-accent">{build.model}</span>
+              <span class="build-subtitle">{build.subtitle}</span>
+            </h2>
+
+            <p class="build-summary">{build.summary}</p>
+
+            <div class="specs-grid">
+              {build.specs.map(spec => (
+                <div class="spec-item">
+                  <span class="spec-label">{spec.label}</span>
+                  <span class="spec-value">{spec.value}</span>
+                </div>
+              ))}
+            </div>
+
+            <div class="highlights-section">
+              <div class="highlights-label">
+                <span class="hl-icon">▸</span> Work Log
+              </div>
+              <ul class="highlights-list">
+                {build.highlights.map(h => (
+                  <li class="highlight-item">{h}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Footer note -->
+  <section class="cars-footer-note">
+    <p>All work done at <a href="https://desertdawgautorepair.com" target="_blank" rel="noopener">Desert Dawg Auto Repair</a>. This is the hobby side. The circuits side is <a href="/projects">over here</a>.</p>
+  </section>
+</Layout>
+
+<style>
+  /* ── Hero ── */
+  .cars-hero {
+    position: relative;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    padding: 120px 48px 80px;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    z-index: 0;
+  }
+
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.35;
+  }
+
+  .grease-stain {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  .stain-1 {
+    width: 500px;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba(180, 100, 20, 0.07) 0%, transparent 70%);
+    top: -60px;
+    right: 10%;
+  }
+
+  .stain-2 {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(ellipse, color-mix(in srgb, var(--accent) 6%, transparent) 0%, transparent 70%);
+    bottom: 0;
+    left: 5%;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  .wrench-icon {
+    font-size: 1rem;
+  }
+
+  .hero-title {
+    margin: 0 0 24px;
+    line-height: 1;
+    font-size: clamp(3.5rem, 8vw, 6rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+  }
+
+  .title-line-1 {
+    display: block;
+    color: var(--text-2);
+  }
+
+  .title-line-2 {
+    display: block;
+    color: var(--text);
+    -webkit-text-stroke: 2px var(--text);
+  }
+
+  .hero-desc {
+    color: var(--text-2);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 520px;
+    margin-bottom: 36px;
+  }
+
+  .hero-stats {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-num {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    font-family: 'Courier New', monospace;
+    margin-top: 4px;
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 36px;
+    background: var(--border-strong);
+  }
+
+  /* Garage badge */
+  .hero-badge {
+    position: absolute;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .badge-ring {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 2px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: badgeSpin 30s linear infinite;
+    position: relative;
+  }
+
+  .badge-ring::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    border: 1px dashed var(--border);
+  }
+
+  .badge-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    animation: badgeSpin 30s linear infinite reverse;
+  }
+
+  .badge-top, .badge-bot {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    font-family: 'Courier New', monospace;
+  }
+
+  .badge-center {
+    font-size: 1.5rem;
+  }
+
+  @keyframes badgeSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* ── Builds Section ── */
+  .builds-section {
+    padding: 60px 48px 80px;
+  }
+
+  .builds-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .build-card {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .build-card:first-child {
+    border-radius: 8px 8px 0 0;
+  }
+
+  .build-card:last-child {
+    border-radius: 0 0 8px 8px;
+  }
+
+  .build-card:hover {
+    border-color: var(--border-strong);
+  }
+
+  .card-reverse {
+    direction: rtl;
+  }
+
+  .card-reverse > * {
+    direction: ltr;
+  }
+
+  /* Image side */
+  .card-image-side {
+    position: relative;
+    min-height: 320px;
+    background: var(--surface-2);
+    border-right: 1px solid var(--border);
+  }
+
+  .card-reverse .card-image-side {
+    border-right: none;
+    border-left: 1px solid var(--border);
+  }
+
+  /* ── Carousel ── */
+  .car-carousel {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .car-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.25s ease;
+    cursor: pointer;
+  }
+
+  .car-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 90px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+    pointer-events: none;
+  }
+
+  .car-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #fff;
+    font-size: 1.3rem;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.2s, background 0.15s;
+    padding: 0;
+    line-height: 1;
+    z-index: 2;
+  }
+
+  .car-arrow:hover {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .car-carousel:hover .car-arrow {
+    opacity: 1;
+  }
+
+  .car-prev { left: 10px; }
+  .car-next { right: 10px; }
+
+  .car-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 2;
+  }
+
+  .car-counter {
+    font-family: 'Courier New', monospace;
+    font-size: 0.62rem;
+    color: rgba(255, 255, 255, 0.65);
+    letter-spacing: 0.12em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .car-toggle {
+    display: flex;
+    gap: 4px;
+  }
+
+  .tog {
+    font-family: 'Courier New', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(0, 0, 0, 0.45);
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .tog:hover {
+    background: rgba(0, 0, 0, 0.65);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .tog.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* Bolt corners */
+  .bolt-corners {
+    position: absolute;
+    inset: 12px;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .bolt {
+    position: absolute;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.2);
+    line-height: 1;
+  }
+
+  .tl { top: 0; left: 0; }
+  .tr { top: 0; right: 0; }
+  .bl { bottom: 0; left: 0; }
+  .br { bottom: 0; right: 0; }
+
+  /* Info side */
+  .card-info-side {
+    padding: 40px 44px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .year-tag {
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--text-3);
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+
+  .status-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: 'Courier New', monospace;
+    padding: 4px 10px;
+    border-radius: 2px;
+    border: 1px solid;
+    font-weight: 600;
+  }
+
+  .status-active {
+    color: #f59e0b;
+    border-color: #f59e0b44;
+    background: #f59e0b11;
+  }
+
+  .status-done {
+    color: #22c55e;
+    border-color: #22c55e44;
+    background: #22c55e11;
+  }
+
+  .status-queued {
+    color: var(--text-3);
+    border-color: var(--border);
+    background: transparent;
+  }
+
+  .build-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .model-accent {
+    color: var(--accent);
+  }
+
+  .build-subtitle {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Courier New', monospace;
+    margin-top: 4px;
+  }
+
+  .build-summary {
+    color: var(--text-2);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* Specs grid */
+  .specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .spec-item {
+    background: var(--surface-2);
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .spec-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    font-family: 'Courier New', monospace;
+  }
+
+  .spec-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* Work log */
+  .highlights-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .highlights-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    font-family: 'Courier New', monospace;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .hl-icon {
+    color: var(--accent);
+  }
+
+  .highlights-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .highlight-item {
+    font-size: 0.85rem;
+    color: var(--text-2);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .highlight-item::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 0.75rem;
+  }
+
+  /* Footer note */
+  .cars-footer-note {
+    text-align: center;
+    padding: 40px 48px 80px;
+    color: var(--text-3);
+    font-size: 0.9rem;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  .cars-footer-note strong {
+    color: var(--text-2);
+  }
+
+  .cars-footer-note a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .cars-footer-note a:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Lightbox ── */
+  #car-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+  }
+
+  #car-lightbox.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  #car-lb-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 15, 10, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  #car-lb-container {
+    position: relative;
+    z-index: 1;
+    background: var(--bg);
+    border: 1px solid var(--accent);
+    border-radius: 18px;
+    overflow: hidden;
+    width: min(84vw, 940px);
+    max-height: 84vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 0 1px rgba(0,200,150,0.12), 0 32px 64px rgba(0,0,0,0.55);
+    transform: scale(0.95);
+    transition: transform 0.22s ease;
+  }
+
+  #car-lightbox.open #car-lb-container {
+    transform: scale(1);
+  }
+
+  #car-lb-img {
+    width: 100%;
+    max-height: calc(84vh - 44px);
+    object-fit: contain;
+    display: block;
+    background: #0f0f0f;
+  }
+
+  #car-lb-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-top: 1px solid rgba(0,200,150,0.2);
+    min-height: 36px;
+    background: rgba(0,200,150,0.04);
+  }
+
+  #car-lb-counter {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+
+  #car-lb-toggle {
+    display: flex;
+    gap: 4px;
+  }
+
+  .lb-tog {
+    font-family: 'Courier New', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+    border: 1px solid rgba(0,200,150,0.3);
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .lb-tog:hover {
+    background: rgba(0,200,150,0.1);
+  }
+
+  .lb-tog.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  #car-lb-ui {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  #car-lb-close {
+    position: absolute;
+    top: calc(50% - min(42vh, 470px) + 10px);
+    right: calc(50% - min(42vw, 470px) + 10px);
+    pointer-events: all;
+    background: var(--bg);
+    border: 1px solid rgba(0,200,150,0.35);
+    color: var(--accent);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  #car-lb-close:hover {
+    background: rgba(0,200,150,0.15);
+    border-color: var(--accent);
+  }
+
+  #car-lb-prev, #car-lb-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: all;
+    background: var(--bg);
+    border: 1px solid rgba(0,200,150,0.3);
+    color: var(--accent);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  #car-lb-prev:hover, #car-lb-next:hover {
+    background: rgba(0,200,150,0.15);
+    border-color: var(--accent);
+  }
+
+  #car-lb-prev { left: calc(50% - min(42vw, 470px) + 10px); }
+  #car-lb-next { right: calc(50% - min(42vw, 470px) + 10px); }
+  #car-lb-prev.show, #car-lb-next.show { display: flex; }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .cars-hero {
+      padding: 100px 24px 60px;
+      min-height: auto;
+    }
+
+    .hero-badge {
+      display: none;
+    }
+
+    .builds-section {
+      padding: 40px 16px 60px;
+    }
+
+    .build-card,
+    .card-reverse {
+      grid-template-columns: 1fr;
+      direction: ltr;
+    }
+
+    .card-image-side {
+      min-height: 240px;
+      border-right: none !important;
+      border-left: none !important;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Always show arrows on touch */
+    .car-arrow {
+      opacity: 1;
+    }
+
+    .card-info-side {
+      padding: 28px 24px;
+    }
+
+    .build-title {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  const BASE = 'https://raw.githubusercontent.com/PaulThillier/car-restorations/main';
+
+  function probeImages(folderUrl: string, max = 25): Promise<string[]> {
+    return Promise.all(
+      Array.from({ length: max }, (_, i) => {
+        const url = `${folderUrl}/${i + 1}.jpg`;
+        return new Promise<string | null>(resolve => {
+          const img = new Image();
+          img.onload = () => resolve(url);
+          img.onerror = () => resolve(null);
+          img.src = url;
+        });
+      })
+    ).then(results => {
+      const imgs: string[] = [];
+      for (const r of results) {
+        if (!r) break;
+        imgs.push(r);
+      }
+      return imgs;
+    });
+  }
+
+  // ── Lightbox ────────────────────────────────────────────────────────────────
+  const lightbox   = document.getElementById('car-lightbox')   as HTMLDivElement;
+  const lbBackdrop = document.getElementById('car-lb-backdrop') as HTMLDivElement;
+  const lbImg      = document.getElementById('car-lb-img')      as HTMLImageElement;
+  const lbCounter  = document.getElementById('car-lb-counter')  as HTMLSpanElement;
+  const lbToggle   = document.getElementById('car-lb-toggle')   as HTMLDivElement;
+  const lbClose    = document.getElementById('car-lb-close')    as HTMLButtonElement;
+  const lbPrev     = document.getElementById('car-lb-prev')     as HTMLButtonElement;
+  const lbNext     = document.getElementById('car-lb-next')     as HTMLButtonElement;
+  const lbTogBtns  = lbToggle.querySelectorAll<HTMLButtonElement>('.lb-tog');
+
+  let lbImages: string[] = [];
+  let lbAfterImages: string[] = [];
+  let lbBeforeImages: string[] = [];
+  let lbIdx = 0;
+
+  function openLightbox(afterImages: string[], beforeImages: string[], mode: string, startIdx: number) {
+    lbAfterImages  = afterImages;
+    lbBeforeImages = beforeImages;
+    lbImages = mode === 'before' ? beforeImages : afterImages;
+    lbIdx    = startIdx;
+
+    if (beforeImages.length > 0) {
+      lbToggle.style.display = 'flex';
+      lbTogBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    } else {
+      lbToggle.style.display = 'none';
+    }
+
+    renderLb();
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function renderLb() {
+    lbImg.src = lbImages[lbIdx];
+    lbImg.alt = `Image ${lbIdx + 1}`;
+    const multi = lbImages.length > 1;
+    lbCounter.textContent = multi ? `${lbIdx + 1} / ${lbImages.length}` : '';
+    lbPrev.classList.toggle('show', multi);
+    lbNext.classList.toggle('show', multi);
+  }
+
+  lbTogBtns.forEach(b => {
+    b.addEventListener('click', () => {
+      const mode = b.dataset.mode!;
+      lbImages = mode === 'before' ? lbBeforeImages : lbAfterImages;
+      lbIdx = 0;
+      lbTogBtns.forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+      renderLb();
+    });
+  });
+
+  lbClose.addEventListener('click', closeLightbox);
+  lbBackdrop.addEventListener('click', closeLightbox);
+  lbPrev.addEventListener('click',  () => { lbIdx = (lbIdx - 1 + lbImages.length) % lbImages.length; renderLb(); });
+  lbNext.addEventListener('click',  () => { lbIdx = (lbIdx + 1) % lbImages.length; renderLb(); });
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape')      closeLightbox();
+    if (e.key === 'ArrowLeft')  { lbIdx = (lbIdx - 1 + lbImages.length) % lbImages.length; renderLb(); }
+    if (e.key === 'ArrowRight') { lbIdx = (lbIdx + 1) % lbImages.length; renderLb(); }
+  });
+
+  // ── Carousels ───────────────────────────────────────────────────────────────
+  document.querySelectorAll<HTMLElement>('.car-carousel').forEach(async el => {
+    const folder = el.dataset.folder!;
+    const coverUrl = el.dataset.cover!;
+    const enc = encodeURIComponent(folder);
+    const base = `${BASE}/${enc}`;
+
+    const imgEl     = el.querySelector<HTMLImageElement>('.car-img')!;
+    const prevBtn   = el.querySelector<HTMLButtonElement>('.car-prev')!;
+    const nextBtn   = el.querySelector<HTMLButtonElement>('.car-next')!;
+    const counterEl = el.querySelector<HTMLElement>('.car-counter')!;
+    const toggleEl  = el.querySelector<HTMLElement>('.car-toggle')!;
+    const togBtns   = el.querySelectorAll<HTMLButtonElement>('.tog');
+
+    const [afterImgs, beforeImgs] = await Promise.all([
+      probeImages(`${base}/After`),
+      probeImages(`${base}/Before`),
+    ]);
+
+    const allAfterImgs = [coverUrl, ...afterImgs];
+
+    if (beforeImgs.length > 0) {
+      toggleEl.style.display = 'flex';
+    }
+
+    let images = allAfterImgs;
+    let idx = 0;
+
+    function show(i: number) {
+      if (!images.length) return;
+      idx = ((i % images.length) + images.length) % images.length;
+      imgEl.style.opacity = '0.45';
+      imgEl.src = images[idx];
+      counterEl.textContent = `${idx + 1} / ${images.length}`;
+    }
+
+    imgEl.addEventListener('load', () => { imgEl.style.opacity = '1'; });
+
+    togBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === 'after'));
+    show(0);
+
+    prevBtn.addEventListener('click', () => show(idx - 1));
+    nextBtn.addEventListener('click', () => show(idx + 1));
+
+    togBtns.forEach(b => {
+      b.addEventListener('click', () => {
+        const mode = b.dataset.mode!;
+        images = mode === 'before' ? beforeImgs : allAfterImgs;
+        togBtns.forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+        show(0);
+      });
+    });
+
+    imgEl.addEventListener('click', () => {
+      const mode = images === beforeImgs ? 'before' : 'after';
+      openLightbox(allAfterImgs, beforeImgs, mode, idx);
+    });
+
+    // Touch swipe
+    let touchX = 0;
+    el.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+    el.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 40) dx < 0 ? show(idx + 1) : show(idx - 1);
+    }, { passive: true });
+  });
+</script>
